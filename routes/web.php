@@ -14,7 +14,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-	$links = \App\Link::all();
+	$pizzas = \App\Pizza::all();
+	$sizes = \App\Size::all();
 
-	return view('welcome', ['links' => $links]);
+	return view(
+		'welcome',
+		[
+			'pizzas' => $pizzas,
+			'sizes' => $sizes,
+		]
+	);
 });

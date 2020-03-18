@@ -83,14 +83,47 @@
 		@endif
 
 		<div class="content">
-			<div class="title m-b-md">
-				Laravel
-			</div>
-			<div class="links">
-				@foreach ($links as $link)
-				<a href="{{ $link->url }}">{{ $link->title }}</a>
+			<h1 class="title m-b-md">
+				PizzaHub
+			</h1>
+
+			<section class="pizzas">
+				@foreach ($pizzas as $pizza)
+				<article>
+					<form action="">
+						<fieldset class="form__fieldset">
+							<figure aria-label="{{ $pizza->name }}" role="figure">
+								<img alt="{{ $pizza->name }}" src="{{ $pizza->img_url }}">
+								<figcaption>{{ $pizza->name }}</figcaption>
+							</figure>
+							<legend class="form__legend">{{ $pizza->name }}</legend>
+							<dl class="form-group">
+								<dt class="form__dt">
+									<label class="form__label" for="pizza__size_{{ $pizza->id }}">
+										Size:
+									</label>
+								</dt>
+								<dd class="form__dd">
+									<select class="form__select" id="pizza__size_{{ $pizza->id }}" name="pizza__size" title="Pizza Size">
+										@foreach ($sizes as $size)
+										<option value="{{$size->id}}">{{$size->name}}</option>
+										@endforeach
+									</select>
+									<small class="form__text_muted form__text_small">
+										Pizza Size
+									</small>
+								</dd>
+							</dl>
+							<dl class="form-group">
+								<dt class="form__dt"></dt>
+								<dd class="form__dd"><button class="form__button" name="pizza__add" type="submit">Add</button></dd>
+							</dl>
+						</fieldset>
+					</form>
+				</article>
 				@endforeach
-			</div>
+			</section>
+
 		</div>
 	</div>
 </body>
