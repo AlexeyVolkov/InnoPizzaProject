@@ -1,0 +1,54 @@
+@import "normalize.less";
+@import "defaults.less";
+@import "vars.less";
+@import "text.less";
+@import "row.less";
+@import "form.less";
+@import "figure.less";
+// @import "table.less";
+
+body {
+    font-family: @arial;
+    text-rendering: geometricPrecision;
+    hyphens: auto;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+
+    @media print {
+        font-weight: 900;
+        color: black;
+        line-height: 1.5;
+    }
+}
+.table__td,
+.table__th {
+    &:nth-child(1) {
+        // Name
+        text-align: left;
+    }
+    &:nth-child(2) {
+        // Type
+        text-align: center;
+    }
+    &:nth-child(3) {
+        // Actions
+        text-align: right;
+    }
+}
+.table-actor {
+    .table__td,
+    .table__th {
+        &:nth-child(1) {
+            // Name
+            text-align: left;
+        }
+        &:nth-child(2) {
+            // Type
+            text-align: left;
+        }
+        &:nth-child(3) {
+            // Actions
+            text-align: right;
+        }
+    }
+}

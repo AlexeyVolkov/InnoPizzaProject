@@ -25,3 +25,7 @@ Route::get('/', function () {
 		]
 	);
 });
+
+Route::get('/add_pizza', function () {
+	return view('add_pizza');
+});

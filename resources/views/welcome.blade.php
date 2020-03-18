@@ -1,131 +1,66 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.app')
+@section('content')
+<form action="/add__pizza" class="form">
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<title>Laravel</title>
-
-	<!-- Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
-	<!-- Styles -->
-	<style>
-	html,
-	body {
-		background-color: #fff;
-		color: #636b6f;
-		font-family: 'Nunito', sans-serif;
-		font-weight: 200;
-		height: 100vh;
-		margin: 0;
-	}
-
-	.full-height {
-		height: 100vh;
-	}
-
-	.flex-center {
-		align-items: center;
-		display: flex;
-		justify-content: center;
-	}
-
-	.position-ref {
-		position: relative;
-	}
-
-	.top-right {
-		position: absolute;
-		right: 10px;
-		top: 18px;
-	}
-
-	.content {
-		text-align: center;
-	}
-
-	.title {
-		font-size: 84px;
-	}
-
-	.links>a {
-		color: #636b6f;
-		padding: 0 25px;
-		font-size: 13px;
-		font-weight: 600;
-		letter-spacing: .1rem;
-		text-decoration: none;
-		text-transform: uppercase;
-	}
-
-	.m-b-md {
-		margin-bottom: 30px;
-	}
-	</style>
-</head>
-
-<body>
-	<div class="flex-center position-ref full-height">
-		@if (Route::has('login'))
-		<div class="top-right links">
-			@auth
-			<a href="{{ url('/home') }}">Home</a>
-			@else
-			<a href="{{ route('login') }}">Login</a>
-
-			@if (Route::has('register'))
-			<a href="{{ route('register') }}">Register</a>
-			@endif
-			@endauth
-		</div>
-		@endif
-
-		<div class="content">
-			<h1 class="title m-b-md">
-				PizzaHub
+	<ol start="1" class="links links_row">
+		<li class="heading_1">
+			<h1 class="heading heading_1 heading_inline title m-b-md">
+				Choose Pizza:
 			</h1>
+		</li>
+		<li class="heading_3">
+			<button class="form__button form__button_inline heading heading_3 heading_inline" name="add__pizza_submit-button"
+				type="submit">
+				Check Out ->
+			</button>
+		</li>
+	</ol>
 
-			<section class="pizzas">
-				@foreach ($pizzas as $pizza)
-				<article>
-					<form action="">
-						<fieldset class="form__fieldset">
-							<figure aria-label="{{ $pizza->name }}" role="figure">
-								<img alt="{{ $pizza->name }}" src="{{ $pizza->img_url }}">
-								<figcaption>{{ $pizza->name }}</figcaption>
-							</figure>
-							<legend class="form__legend">{{ $pizza->name }}</legend>
-							<dl class="form-group">
-								<dt class="form__dt">
-									<label class="form__label" for="pizza__size_{{ $pizza->id }}">
-										Size:
-									</label>
-								</dt>
-								<dd class="form__dd">
-									<select class="form__select" id="pizza__size_{{ $pizza->id }}" name="pizza__size" title="Pizza Size">
-										@foreach ($sizes as $size)
-										<option value="{{$size->id}}">{{$size->name}}</option>
-										@endforeach
-									</select>
-									<small class="form__text_muted form__text_small">
-										Pizza Size
-									</small>
-								</dd>
-							</dl>
-							<dl class="form-group">
-								<dt class="form__dt"></dt>
-								<dd class="form__dd"><button class="form__button" name="pizza__add" type="submit">Add</button></dd>
-							</dl>
-						</fieldset>
-					</form>
-				</article>
-				@endforeach
-			</section>
 
-		</div>
-	</div>
-</body>
+	<section class="pizzas row">
+		@foreach ($pizzas as $pizza)
+		<article class="row__block row__block_pizza">
+			<fieldset class="form__fieldset">
+				<figure aria-label="{{ $pizza->name }}" role="figure" class="figure">
+					<img alt="{{ $pizza->name }}" src="" class="img figure__img">
+					<figcaption class="figure__figcaption screen-reader-text">{{ $pizza->name }}</figcaption>
+				</figure>
+				<legend class="form__legend">{{ $pizza->name }}</legend>
+				<dl class="form-group">
+					<dt class="form__dt">
+						<label class="form__label" for="pizza__size_{{ $pizza->id }}">
+							Size:
+						</label>
+					</dt>
+					<dd class="form__dd">
+						<select class="form__select" id="pizza__size_{{ $pizza->id }}" name="pizza__size" title="Pizza Size">
+							@foreach ($sizes as $size)
+							<option value="{{$size->id}}">{{$size->name}}</option>
+							@endforeach
+						</select>
+						<small class="form__text_muted form__text_small">
+							Pizza Size
+						</small>
+					</dd>
+				</dl>
+				<dl class="form-group">
+					<dt class="form__dt">
+						<label class="form__label" for="pizza__add_{{ $pizza->id }}">
+							Add:
+						</label>
+					</dt>
+					<dd class="form__dd">
+						<input class="form__input checkbox_big" id="pizza__add_{{ $pizza->id }}" name="pizza__add[]"
+							title="Add {{ $pizza->name }} to basket" type="checkbox">
+						<small class="form__text_muted form__text_small">
+							Add {{ $pizza->name }} to basket
+						</small>
+					</dd>
+				</dl>
+			</fieldset>
+		</article>
+		@endforeach
+	</section>
 
-</html>
+</form>
+@endsection

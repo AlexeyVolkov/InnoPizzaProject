@@ -1,0 +1,128 @@
+.row {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: stretch;
+    max-width: 100%;
+
+    @media (min-width: @ipad) {
+        flex-direction: row;
+    }
+}
+
+.row_simple {
+    justify-content: flex-start;
+    align-items: normal;
+    flex-direction: row;
+}
+
+.row__block {
+    width: 100%;
+    padding: 1rem 0;
+    margin: 0.5rem 0;
+    overflow-x: auto;
+
+    @media (min-width: @ipad) {
+        width: 20rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    @media (min-width: @desktop) {
+        // width: 20rem;
+    }
+    @media print {
+        padding: 0.2rem 0;
+    }
+}
+.row__block_simple {
+    width: auto;
+    padding: 1rem;
+    @media (min-width: @ipad) {
+        width: auto;
+    }
+}
+.row__block_pizza {
+    border: thin solid black;
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+        box-shadow: 0 0 0 0.3rem black;
+    }
+}
+
+.row_3 {
+    .row__block {
+        @media (min-width: @ipad) {
+            width: 33%;
+        }
+    }
+}
+.row__block-left {
+    @media (min-width: @ipad) {
+    }
+}
+.row__block-right {
+    @media (min-width: @ipad) {
+        border-left: thin solid @black;
+    }
+}
+.row__heading {
+    flex-basis: 100%;
+    background-color: @black;
+    color: @white;
+    @media (min-width: @ipad) {
+        padding-left: 2rem;
+    }
+    @media print and (min-width: @ipad) {
+        padding-left: 0.2rem;
+    }
+    @media print {
+        background-color: white;
+        color: black;
+        border-top: thin solid black;
+        border-bottom: thin solid black;
+    }
+}
+
+.prettyprint {
+    overflow: hidden;
+    border: thin solid #e1e1e8;
+    background-color: #f7f7f9;
+    border-radius: 0.25rem;
+}
+.code {
+    padding: 1rem;
+    display: block;
+    min-width: 20rem;
+    max-width: 60rem;
+    overflow: auto;
+
+    page-break-inside: avoid;
+    break-inside: avoid;
+    font-family: @mono;
+    line-height: 1.2;
+    word-wrap: break-word;
+
+    &:focus {
+        outline: thick solid @black;
+    }
+    @media print {
+        background-color: white;
+        color: black;
+        border: thin solid black;
+        padding: 0.4rem 0;
+    }
+}
+.code__heading {
+    margin: 0.6rem 0;
+    border-bottom: thin solid #eee;
+    font-size: 1.2em;
+
+    @media print {
+        border-bottom-color: white;
+        margin: 0.1rem 0;
+    }
+}
