@@ -4,9 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSizeTable extends Migration
+class CreatePizzasTable extends Migration
 {
-	protected $table = 'size';
 	/**
 	 * Run the migrations.
 	 *
@@ -14,9 +13,14 @@ class CreateSizeTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('size', function (Blueprint $table) {
+		Schema::create('pizzas', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name');
+			$table->string('img_url');
+			$table->longText('description');
+			$table->integer('price');
+			$table->integer('size__id')->unsigned();
+			$table->foreign('size__id')->references('id')->on('sizes');
 			$table->timestamps();
 		});
 	}
@@ -28,6 +32,6 @@ class CreateSizeTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('size');
+		Schema::dropIfExists('pizzas');
 	}
 }
