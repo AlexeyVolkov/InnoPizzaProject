@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,17 +16,42 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 	$pizzas = \App\Pizza::all();
-	$sizes = \App\Size::all();
 
 	return view(
 		'welcome',
 		[
 			'pizzas' => $pizzas,
-			'sizes' => $sizes,
 		]
 	);
 });
 
-Route::get('/add_pizza', function () {
-	return view('add_pizza');
+Route::get('/bag', function () {
+	return view('bag');
+});
+
+Route::post('/bag', function (Request $request) {
+	// protected $fillable = ['pizza__add'];
+	$data = $request->validate([
+		'add__pizza_submit-button' => 'required',
+		'pizzas__id' => '',
+	]);
+	$pizzas__id = $request->input('pizzas__id');
+	if (is_array($pizzas__id) && count($pizzas__id) > 1) {
+		$pizzas =  \App\Pizza::select('*')->whereIn('id', $pizzas__id)->get();
+		$pizzas__price =  \App\Pizza::select('COUNT(price)')->whereIn('id', $pizzas__id)->get();
+		$sizes = \App\Size::all();
+
+		$pizzas__subtotal = $pizzas__price;
+
+		return view(
+			'bag',
+			[
+				'pizzas' => $pizzas,
+				'sizes' => $sizes,
+				'pizzas__total_price' => $pizzas__total_price,
+			]
+		);
+	} else {
+		return view('welcome');
+	}
 });

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
-<form action="/add__pizza" class="form">
+<form action="bag" class="form" method="post">
+	{!! csrf_field() !!}
 
 	<ol start="1" class="links links_row">
 		<li class="heading_1">
@@ -10,12 +11,24 @@
 		</li>
 		<li class="heading_3">
 			<button class="form__button form__button_inline heading heading_3 heading_inline" name="add__pizza_submit-button"
-				type="submit">
-				Check Out ->
+				type="submit" value="1">
+				Review bag ->
 			</button>
 		</li>
 	</ol>
 
+	@if ($errors->any())
+	<section class="text alert alert-danger" role="alert">
+		Please fix the following errors:
+		{{ $errors}}
+	</section>
+	@endif
+	@if($errors->has('pizzas__id'))
+	<span class="help-block">{{ $errors->first('pizzas__id') }}</span>
+	@endif
+	@if($errors->has('add__pizza_submit-button'))
+	<span class="help-block">{{ $errors->first('add__pizza_submit-button') }}</span>
+	@endif
 
 	<section class="pizzas row">
 		@foreach ($pizzas as $pizza)
@@ -28,32 +41,15 @@
 				<legend class="form__legend">{{ $pizza->name }}</legend>
 				<dl class="form-group">
 					<dt class="form__dt">
-						<label class="form__label" for="pizza__size_{{ $pizza->id }}">
-							Size:
-						</label>
-					</dt>
-					<dd class="form__dd">
-						<select class="form__select" id="pizza__size_{{ $pizza->id }}" name="pizza__size" title="Pizza Size">
-							@foreach ($sizes as $size)
-							<option value="{{$size->id}}">{{$size->name}}</option>
-							@endforeach
-						</select>
-						<small class="form__text_muted form__text_small">
-							Pizza Size
-						</small>
-					</dd>
-				</dl>
-				<dl class="form-group">
-					<dt class="form__dt">
 						<label class="form__label" for="pizza__add_{{ $pizza->id }}">
 							Add:
 						</label>
 					</dt>
 					<dd class="form__dd">
-						<input class="form__input checkbox_big" id="pizza__add_{{ $pizza->id }}" name="pizza__add[]"
-							title="Add {{ $pizza->name }} to basket" type="checkbox">
+						<input class="form__input checkbox_big" id="pizza__add_{{ $pizza->id }}" name="pizzas__id[]"
+							title="Add {{ $pizza->name }} to bag" type="checkbox" value="{{ $pizza->id }}">
 						<small class="form__text_muted form__text_small">
-							Add {{ $pizza->name }} to basket
+							Add {{ $pizza->name }} to bag
 						</small>
 					</dd>
 				</dl>
