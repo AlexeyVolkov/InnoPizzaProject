@@ -17,9 +17,6 @@ class CreateOrdersTable extends Migration
 			$table->increments('id');
 			$table->integer('customer__id')->unsigned();
 			$table->foreign('customer__id')->references('id')->on('customers');
-			$table->integer('pizza__id')->unsigned();
-			$table->foreign('pizza__id')->references('id')->on('pizzas');
-			$table->dateTime('date');
 			$table->timestamps();
 		});
 	}

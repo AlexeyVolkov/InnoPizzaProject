@@ -1,5 +1,8 @@
 <?php
 
+use App\Order;
+use App\OrderedPizza;
+use App\Customer;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -38,20 +41,64 @@ Route::post('/bag', function (Request $request) {
 	$pizzas__id = $request->input('pizzas__id');
 	if (is_array($pizzas__id) && count($pizzas__id) > 1) {
 		$pizzas =  \App\Pizza::select('*')->whereIn('id', $pizzas__id)->get();
-		$pizzas__price =  \App\Pizza::select('COUNT(price)')->whereIn('id', $pizzas__id)->get();
+
+		// open customer
+		$customer = new Customer();
+		$customer->name = 'New Customer';
+		// insert
+		$customer->save();
+
+		// open order
+		$order = new Order();
+		$order->customer__id = $customer->id;
+		// insert
+		$order->save();
+
+		foreach ($pizzas as $pizza) {
+			// open orderedPizzas
+			$orderedPizza = new OrderedPizza();
+			$orderedPizza->order__id = $order->id;
+			$orderedPizza->pizza__id = $pizza->id;
+			// insert
+			$orderedPizza->save();
+		}
+
+		// pizzas prices
+		$pizzas__price =  \App\Pizza::select('*')->whereIn('id', $pizzas__id)->sum('price');
+
 		$sizes = \App\Size::all();
 
 		$pizzas__subtotal = $pizzas__price;
+		$pizzas__shipping = $pizzas__subtotal * 0.10;
+		$pizzas__total = $pizzas__subtotal + $pizzas__shipping;
 
 		return view(
 			'bag',
 			[
 				'pizzas' => $pizzas,
 				'sizes' => $sizes,
-				'pizzas__total_price' => $pizzas__total_price,
+				'pizzas__subtotal' => $pizzas__subtotal,
+				'pizzas__shipping' => $pizzas__shipping,
+				'pizzas__total' => $pizzas__total,
 			]
 		);
 	} else {
 		return view('welcome');
 	}
+});
+
+
+Route::get('/checkout', function () {
+	return view('checkout');
+});
+
+Route::post('/checkout', function (Request $request) {
+	// protected $fillable = ['pizza__add'];
+	$data = $request->validate([
+		'checkout_submit-button' => 'required',
+		'pizzas__id' => '',
+	]);
+	return view(
+		'checkout'
+	);
 });

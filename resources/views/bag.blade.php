@@ -5,7 +5,7 @@
 
 	<ol start="1" class="links links_row">
 		<li class="heading_3">
-			<a href="./" class="heading heading_3 heading_inline title m-b-md">
+			<a href="./" class="link heading heading_3 heading_inline title m-b-md">
 				<- Choose Pizza </a>
 		</li>
 		<li class="heading_1">
@@ -112,17 +112,27 @@
 					</dt>
 					<dd class="form__dd">
 						<div class="flex-row">
-							<input class="form__input" id="payment" name="pizza__payment-method"
+							<input class="form__input" id="pizza__payment-method_bank" name="pizza__payment-method"
 								title="PizzaHub's courier has a terminal" type="radio" value="payment"><label class="form__label"
-								for="payment">Bank Card</label>
+								for="pizza__payment-method_bank">Bank Card</label>
 							<small class="form__text_muted form__text_small">PizzaHub's courier has a terminal.</small>
 						</div>
 						<div class="flex-row">
-							<input class="form__input" id="take_away" name="pizza__payment-method"
+							<input class="form__input" id="pizza__payment-method_cash" name="pizza__payment-method"
 								title="PizzaHub's courier has change" type="radio" value="take_away">
-							<label class="form__label" for="take_away">Cash</label>
+							<label class="form__label" for="pizza__payment-method_cash">Cash</label>
 							<small class="form__text_muted form__text_small">PizzaHub's courier has change.</small>
 						</div>
+					</dd>
+				</dl>
+				<dl class="form-group">
+					<dt class="form__dt">
+					</dt>
+					<dd class="form__dd">
+						<button class="form__button form__button_inline heading heading_3 heading_inline"
+							name="checkout_submit-button" type="submit" value="1">
+							Checkout
+						</button>
 					</dd>
 				</dl>
 			</fieldset>
