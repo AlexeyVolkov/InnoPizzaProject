@@ -17,6 +17,38 @@ use Illuminate\Http\Request;
 |
 */
 
+/*
+|
+| 1. Show all pizzas
+|
+| 2.0 If User Session exist goto 3
+| 2.1 Get all pizzas selected by user
+| 2.2 Get the same pizzas from DB by ids
+| 2.3 Create a new Customer
+| 2.4 Create a new Customer Session
+| 2.5 Calculate prices
+| 2.6 Show bill draft and allow to choose size, etc.
+|
+| 3.1 Get Open order by Customer else goto 2.0
+| 3.2 Get all pizzas selected by user and goto 2.2
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+*/
+
+/**
+ * 1. Show all pizzas
+ */
 Route::get('/', function () {
 	$pizzas = \App\Pizza::all();
 
@@ -32,6 +64,13 @@ Route::get('/bag', function () {
 	return view('bag');
 });
 
+/**
+ * 2. Get all checked pizzas: `pizzas__id`
+ * Get the same pizzas from DB by ids
+ * Create a new Customer
+ * Create a new Customer Session
+ * Calculate prices
+ */
 Route::post('/bag', function (Request $request) {
 	// protected $fillable = ['pizza__add'];
 	$data = $request->validate([
@@ -47,6 +86,10 @@ Route::post('/bag', function (Request $request) {
 		$customer->name = 'New Customer';
 		// insert
 		$customer->save();
+
+		// set session
+		Session::put('pizza.id', $customer->id);
+		Session::put('pizza.user', $customer->name);
 
 		// open order
 		$order = new Order();
@@ -92,13 +135,21 @@ Route::get('/checkout', function () {
 	return view('checkout');
 });
 
+/**
+ * 3. Show a bill
+ */
 Route::post('/checkout', function (Request $request) {
 	// protected $fillable = ['pizza__add'];
 	$data = $request->validate([
 		'checkout_submit-button' => 'required',
 		'pizzas__id' => '',
 	]);
+
+	$user__id = Session::get('pizza.id', 34);
 	return view(
-		'checkout'
+		'checkout',
+		[
+			'customer__id' => $user__id,
+		]
 	);
 });
