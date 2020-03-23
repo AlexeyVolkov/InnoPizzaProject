@@ -68,6 +68,7 @@ Route::get('/bag', function (Request $request) {
         $customer__exists = DB::table('customers')
             ->select('*')
             ->where('id', $customer__id)
+            ->orderBy('id', 'desc')
             ->exists();
     } else { // nothing stored in session
         $request->session()->forget('customer__id');
@@ -77,18 +78,21 @@ Route::get('/bag', function (Request $request) {
         // define customer from Session
         $customer = \App\Customer::select('*')
             ->where('id', $customer__id)
-            ->latest();
+            ->orderBy('id', 'desc')
+            ->first();
         // check if customer has open order
         $order__exists = DB::table('orders')
             ->select('*')
             ->where('customer__id', $customer->id)
             ->where('open', true)
+            ->orderBy('id', 'desc')
             ->exists();
         if ($order__exists) { // order is still open
             $order =  \App\Order::select('*')
                 ->where('customer__id', $customer->id)
                 ->where('open', true)
-                ->latest();
+                ->orderBy('id', 'desc')
+                ->first();
         } else { // no open orders -> main page
             $request->session()->forget('customer__id');
             return redirect('/');
@@ -101,6 +105,7 @@ Route::get('/bag', function (Request $request) {
     $pizzas__exists = DB::table('ordered_pizzas')
         ->select('pizza__id')
         ->where('order__id', $order->id)
+        ->orderBy('id', 'desc')
         ->exists();
 
     if ($pizzas__exists) {
@@ -162,6 +167,7 @@ Route::post('/bag', function (Request $request) {
         $customer__exists = DB::table('customers')
             ->select('*')
             ->where('id', $customer__id)
+            ->orderBy('id', 'desc')
             ->exists();
     } else {
         $customer__exists = false;
@@ -170,7 +176,8 @@ Route::post('/bag', function (Request $request) {
         // define customer from Session
         $customer = \App\Customer::select('*')
             ->where('id', $customer__id)
-            ->latest();
+            ->orderBy('id', 'desc')
+            ->first();
     } else { // new customer
         /**
          * | 2.3 Create a new Customer
@@ -197,7 +204,7 @@ Route::post('/bag', function (Request $request) {
     );
     $pizzas__id = $request->input('pizzas__id');
     // customer chose pizzas
-    if (is_array($pizzas__id) && count($pizzas__id) > 1) {
+    if (is_array($pizzas__id) && count($pizzas__id) > 0) {
         /**
          * | 2.8 Open an order
          */
