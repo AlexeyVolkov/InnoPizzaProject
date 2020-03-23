@@ -93,6 +93,7 @@
 .form__input[type="email"],
 .form__input[type="tel"],
 .form__input[type="file"],
+.form__input[type="number"],
 .form__button[type="submit"],
 .form__button[type="button"],
 .form__textarea,
@@ -109,9 +110,22 @@
 .form__select {
     cursor: pointer;
 }
+.form__input_width-auto {
+    width: auto !important;
+}
+.form__input_width-small {
+    width: auto !important;
+    @media (min-width: @ipad) {
+        width: 4.5em !important;
+    }
+    @media (min-width: @desktop) {
+        width: 5em !important;
+    }
+}
 
 .form__input[type="checkbox"],
-.form__input[type="radio"] {
+.form__input[type="radio"],
+.form__summary {
     cursor: pointer;
     &[disabled] {
         cursor: not-allowed !important;

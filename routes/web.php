@@ -113,8 +113,9 @@ Route::get('/bag', function (Request $request) {
          * | 2.2 Get the same pizzas from DB by ids
          */
         $pizzas = DB::table('pizzas')
-            ->select('*')
+            ->selectRaw('pizzas.*, ordered_pizzas.*, sizes.weight,  pizzas.price * ordered_pizzas.pizza__quantity * sizes.weight as total_price')
             ->join('ordered_pizzas', 'pizzas.id', '=', 'ordered_pizzas.pizza__id')
+            ->join('sizes', 'ordered_pizzas.pizza__size_id', '=', 'sizes.id')
             ->where('ordered_pizzas.order__id', $order->id)
             ->get();
     } else { // customer didn't choose pizzas
@@ -126,8 +127,9 @@ Route::get('/bag', function (Request $request) {
     $pizzas__price =  DB::table('pizzas')
         ->select('*')
         ->join('ordered_pizzas', 'pizzas.id', '=', 'ordered_pizzas.pizza__id')
+        ->join('sizes', 'ordered_pizzas.pizza__size_id', '=', 'sizes.id')
         ->where('ordered_pizzas.order__id', $order->id)
-        ->sum('price');
+        ->sum(DB::raw('pizzas.price * ordered_pizzas.pizza__quantity * sizes.weight'));
 
     $sizes = \App\Size::all();
     /**
@@ -148,6 +150,7 @@ Route::get('/bag', function (Request $request) {
             'pizzas__subtotal' => $pizzas__subtotal,
             'pizzas__shipping' => $pizzas__shipping,
             'pizzas__total' => $pizzas__total,
+            'order__id' => $order->id,
         ]
     );
 });
@@ -256,30 +259,66 @@ Route::post('/bag', function (Request $request) {
             'pizzas__subtotal' => $pizzas__subtotal,
             'pizzas__shipping' => $pizzas__shipping,
             'pizzas__total' => $pizzas__total,
+            'order__id' => $order->id,
         ]
     );
 });
 
+Route::post('/bag/update', function (Request $request) {
 
-Route::get('/checkout', function () {
-    return view('checkout');
+    $customer__id = $request->session()->get('customer__id', -1);
+    $order__exists = false;
+    if ($customer__id > 0) { // something stored in session
+        // check if order exists
+        $order__exists = DB::table('orders')
+            ->select('*')
+            ->where('customer__id', $customer__id)
+            ->where('open', 1)
+            ->exists();
+    } else { // nothing stored in session
+        $request->session()->forget('customer__id');
+        return redirect('/');
+    }
+    if ($order__exists) { // order exists
+        // define customer from Session
+        $order = \App\Order::select('*')
+            ->where('customer__id', $customer__id)
+            ->where('open', 1)
+            ->orderBy('id', 'desc')
+            ->first();
+    } else { // no open orders
+        $request->session()->forget('customer__id');
+        return redirect('/');
+    }
+    $order__id_form = $request->input('order__id');
+    if ($order__id_form != $order->id) { // last order by session id not order by form
+        return redirect('/');
+    }
+
+    $submit_button = $request->input('checkout_recalculate-button');
+
+    if (1 == $submit_button) { // the form was submitted
+        $pizzas = $request->input('pizzas');
+        foreach ($pizzas as $pizza) {
+            $affected = DB::table('ordered_pizzas')
+                ->where('pizza__id', (int) $pizza['id'])
+                ->where('order__id', (int) $order->id)
+                ->update(
+                    [
+                        'pizza__quantity' => (int) $pizza['number'],
+                        'pizza__size_id' => (int) $pizza['size']
+                    ]
+                );
+        }
+        return redirect('/bag');
+    } else {
+        return redirect('/');
+    }
 });
 
-/**
- * 3. Show a bill
- */
+Route::get('/checkout', function (Request $request) {
+});
+
+
 Route::post('/checkout', function (Request $request) {
-    // protected $fillable = ['pizza__add'];
-    $data = $request->validate([
-        'checkout_submit-button' => 'required',
-        'pizzas__id' => '',
-    ]);
-
-    $user__id = Session::get('pizza.id', 34);
-    return view(
-        'checkout',
-        [
-            'customer__id' => $user__id,
-        ]
-    );
 });
