@@ -11,10 +11,9 @@
         </h1>
     </li>
     <li class="heading_3" value="4">
-        <button class="form__button form__button_inline heading heading_3 heading_inline" name="checkout_submit-button"
-            type="submit" value="1">
+        <a href="./checkout" class="link heading_3 heading_inline">
             Checkout ->
-        </button>
+        </a>
     </li>
 </ol>
 
@@ -127,25 +126,6 @@
             <legend class="form__legend">Your bag</legend>
             <dl class="form-group">
                 <dt class="form__dt">
-                    <label class="form__label">Delivery:</label>
-                </dt>
-                <dd class="form__dd">
-                    <div class="flex-row">
-                        <input class="form__input" id="delivery" name="pizza__delivery-method"
-                            title="PizzaHub'll drive to you" type="radio" value="delivery"><label class="form__label"
-                            for="delivery">I'd like it delivered.</label>
-                        <small class="form__text_muted form__text_small">PizzaHub'll drive to you.</small>
-                    </div>
-                    <div class="flex-row">
-                        <input class="form__input" id="take_away" name="pizza__delivery-method"
-                            title="You'll drive to PizzaHub" type="radio" value="take_away">
-                        <label class="form__label" for="take_away">I'll pick it up.</label>
-                        <small class="form__text_muted form__text_small">You'll drive to PizzaHub.</small>
-                    </div>
-                </dd>
-            </dl>
-            <dl class="form-group">
-                <dt class="form__dt">
                     <label class="form__label">Payment:</label>
                 </dt>
                 <dd class="form__dd">
@@ -161,6 +141,16 @@
                         <label class="form__label" for="pizza__payment-method_cash">Cash</label>
                         <small class="form__text_muted form__text_small">PizzaHub's courier has change.</small>
                     </div>
+                </dd>
+            </dl>
+            <dl class="form-group">
+                <dt class="form__dt">
+                    <label class="form__label" for="pizza__address">Address:</label>
+                </dt>
+                <dd class="form__dd"><textarea class="form__textarea" id="pizza__address" name="comments"
+                        placeholder="Intercom pin is 543#" title="Any additional information"
+                        spellcheck="false"></textarea><small class="form__text_muted form__text_small">Any additional
+                        information.</small></dd>
                 </dd>
             </dl>
             <dl class="form-group">

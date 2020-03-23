@@ -6,29 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateOrdersTable extends Migration
 {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		Schema::create('orders', function (Blueprint $table) {
-			$table->increments('id');
-			$table->integer('customer__id')->unsigned();
-			$table->foreign('customer__id')->references('id')->on('customers');
-			$table->boolean('open');
-			$table->timestamps();
-		});
-	}
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('orders', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('customer__id')->unsigned();
+            $table->foreign('customer__id')->references('id')->on('customers');
+            $table->boolean('open');
+            $table->integer('payment')->unsigned()->default(2); // 1 - card; 2 - cash
+            $table->text('comments');
+            $table->timestamps();
+        });
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::dropIfExists('orders');
-	}
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('orders');
+    }
 }

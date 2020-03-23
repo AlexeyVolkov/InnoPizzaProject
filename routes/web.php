@@ -214,6 +214,7 @@ Route::post('/bag', function (Request $request) {
         $order = new Order();
         $order->customer__id = $customer->id;
         $order->open = true;
+        $order->comments = '';
         // insert
         $order->save();
         /**
@@ -241,6 +242,12 @@ Route::post('/bag', function (Request $request) {
         ->sum('price');
 
     $sizes = \App\Size::all();
+    $pizzas = DB::table('pizzas')
+        ->selectRaw('pizzas.*, ordered_pizzas.*, sizes.weight,  pizzas.price * ordered_pizzas.pizza__quantity * sizes.weight as total_price')
+        ->join('ordered_pizzas', 'pizzas.id', '=', 'ordered_pizzas.pizza__id')
+        ->join('sizes', 'ordered_pizzas.pizza__size_id', '=', 'sizes.id')
+        ->where('ordered_pizzas.order__id', $order->id)
+        ->get();
     /**
      * | 2.5 Calculate prices
      */
@@ -317,6 +324,100 @@ Route::post('/bag/update', function (Request $request) {
 });
 
 Route::get('/checkout', function (Request $request) {
+    /**
+     * | 2.0 If User Session exist goto 3
+     */
+    $customer__id = $request->session()->get('customer__id', -1);
+    if ($customer__id > 0) { // something stored in session
+        // check if customer exists
+        $customer__exists = DB::table('customers')
+            ->select('*')
+            ->where('id', $customer__id)
+            ->orderBy('id', 'desc')
+            ->exists();
+    } else { // nothing stored in session
+        $request->session()->forget('customer__id');
+        return redirect('/');
+    }
+    if ($customer__exists) { // returned customer
+        // define customer from Session
+        $customer = \App\Customer::select('*')
+            ->where('id', $customer__id)
+            ->orderBy('id', 'desc')
+            ->first();
+        // check if customer has open order
+        $order__exists = DB::table('orders')
+            ->select('*')
+            ->where('customer__id', $customer->id)
+            ->where('open', true)
+            ->orderBy('id', 'desc')
+            ->exists();
+        if ($order__exists) { // order is still open
+            $order =  \App\Order::select('*')
+                ->where('customer__id', $customer->id)
+                ->where('open', true)
+                ->orderBy('id', 'desc')
+                ->first();
+        } else { // no open orders -> main page
+            $request->session()->forget('customer__id');
+            return redirect('/');
+        }
+    } else { // new customer -> main page
+        $request->session()->forget('customer__id');
+        return redirect('/');
+    }
+
+    $pizzas__exists = DB::table('ordered_pizzas')
+        ->select('pizza__id')
+        ->where('order__id', $order->id)
+        ->orderBy('id', 'desc')
+        ->exists();
+
+    if ($pizzas__exists) {
+        /**
+         * | 2.2 Get the same pizzas from DB by ids
+         */
+        $pizzas = DB::table('pizzas')
+            ->selectRaw('pizzas.*, ordered_pizzas.*, sizes.weight,  pizzas.price * ordered_pizzas.pizza__quantity * sizes.weight as total_price')
+            ->join('ordered_pizzas', 'pizzas.id', '=', 'ordered_pizzas.pizza__id')
+            ->join('sizes', 'ordered_pizzas.pizza__size_id', '=', 'sizes.id')
+            ->where('ordered_pizzas.order__id', $order->id)
+            ->get();
+    } else { // customer didn't choose pizzas
+        $request->session()->forget('customer__id');
+        return redirect('/');
+    }
+
+    // pizzas prices
+    $pizzas__price =  DB::table('pizzas')
+        ->select('*')
+        ->join('ordered_pizzas', 'pizzas.id', '=', 'ordered_pizzas.pizza__id')
+        ->join('sizes', 'ordered_pizzas.pizza__size_id', '=', 'sizes.id')
+        ->where('ordered_pizzas.order__id', $order->id)
+        ->sum(DB::raw('pizzas.price * ordered_pizzas.pizza__quantity * sizes.weight'));
+
+    $sizes = \App\Size::all();
+    /**
+     * | 2.5 Calculate prices
+     */
+    $pizzas__subtotal = $pizzas__price;
+    $pizzas__shipping = $pizzas__subtotal * 0.10;
+    $pizzas__total = $pizzas__subtotal + $pizzas__shipping;
+
+    /**
+     * | 2.6 Show bill draft and allow to choose size, etc.
+     */
+    return view(
+        'checkout',
+        [
+            'pizzas' => $pizzas,
+            'sizes' => $sizes,
+            'pizzas__subtotal' => $pizzas__subtotal,
+            'pizzas__shipping' => $pizzas__shipping,
+            'pizzas__total' => $pizzas__total,
+            'order__id' => $order->id,
+        ]
+    );
 });
 
 
