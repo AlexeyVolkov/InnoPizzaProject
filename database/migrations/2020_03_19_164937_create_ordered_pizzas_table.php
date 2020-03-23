@@ -6,30 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateOrderedPizzasTable extends Migration
 {
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		Schema::create('ordered_pizzas', function (Blueprint $table) {
-			$table->id();
-			$table->integer('pizza__id')->unsigned();
-			$table->foreign('pizza__id')->references('id')->on('pizzas');
-			$table->integer('order__id')->unsigned();
-			$table->foreign('order__id')->references('id')->on('orders');
-			$table->timestamps();
-		});
-	}
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('ordered_pizzas', function (Blueprint $table) {
+            $table->id();
+            $table->integer('pizza__id')->unsigned();
+            $table->foreign('pizza__id')->references('id')->on('pizzas');
+            $table->integer('order__id')->unsigned();
+            $table->foreign('order__id')->references('id')->on('orders');
+            $table->integer('pizza__size_id')->references('id')->on('sizes')->default(1);
+            $table->integer('pizza__quantity')->default(1);
+            $table->timestamps();
+        });
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::dropIfExists('ordered_pizzas');
-	}
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('ordered_pizzas');
+    }
 }
