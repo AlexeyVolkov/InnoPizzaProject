@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
 			$table->increments('id');
 			$table->integer('customer__id')->unsigned();
 			$table->foreign('customer__id')->references('id')->on('customers');
+			$table->boolean('open');
 			$table->timestamps();
 		});
 	}
