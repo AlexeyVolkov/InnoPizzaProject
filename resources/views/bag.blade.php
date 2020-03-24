@@ -105,23 +105,12 @@
                         </td>
                         <td class="table__td">{{$pizzas__shipping}}</td>
                     </tr>
-                    <tr class="table__tr">
-                        <td class="table__td" colspan="4">
-                            <input type="hidden" name="order__id" value="{{$order__id}}">
-                            <button class="form__button heading heading_3 heading_inline"
-                                name="checkout_recalculate-button" type="submit" value="1">
-                                03. Recalculate sum
-                            </button>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </figure>
     </section>
-</form>
 
-<section class="row">
-    <form action="checkout" class="form" method="post">
+    <section class="row">
         <fieldset class="form__fieldset">
             <legend class="form__legend">Your bag</legend>
             <dl class="form-group">
@@ -131,13 +120,13 @@
                 <dd class="form__dd">
                     <div class="flex-row">
                         <input class="form__input" id="pizza__payment-method_bank" name="pizza__payment-method"
-                            title="PizzaHub's courier has a terminal" type="radio" value="payment"><label
-                            class="form__label" for="pizza__payment-method_bank">Bank Card</label>
+                            title="PizzaHub's courier has a terminal" type="radio" value="1"><label class="form__label"
+                            for="pizza__payment-method_bank">Bank Card</label>
                         <small class="form__text_muted form__text_small">PizzaHub's courier has a terminal.</small>
                     </div>
                     <div class="flex-row">
                         <input class="form__input" id="pizza__payment-method_cash" name="pizza__payment-method"
-                            title="PizzaHub's courier has change" type="radio" value="take_away">
+                            title="PizzaHub's courier has change" type="radio" value="2">
                         <label class="form__label" for="pizza__payment-method_cash">Cash</label>
                         <small class="form__text_muted form__text_small">PizzaHub's courier has change.</small>
                     </div>
@@ -149,21 +138,23 @@
                 </dt>
                 <dd class="form__dd"><textarea class="form__textarea" id="pizza__address" name="comments"
                         placeholder="Intercom pin is 543#" title="Any additional information"
-                        spellcheck="false"></textarea><small class="form__text_muted form__text_small">Any additional
+                        spellcheck="false">{{$order->comments}}</textarea><small
+                        class="form__text_muted form__text_small">Any additional
                         information.</small></dd>
                 </dd>
             </dl>
             <dl class="form-group">
                 <dt class="form__dt"></dt>
                 <dd class="form__dd">
-                    <button class="form__button heading heading_3 heading_inline" name="checkout_submit-button"
+                    <input type="hidden" name="order__id" value="{{$order__id}}">
+                    <button class="form__button heading heading_3 heading_inline" name="checkout_recalculate-button"
                         type="submit" value="1">
-                        04. Proceed to Checkout ->
+                        03. Recalculate sum
                     </button>
                 </dd>
             </dl>
         </fieldset>
-</section>
+    </section>
 
 
 

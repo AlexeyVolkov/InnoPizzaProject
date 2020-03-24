@@ -16,91 +16,109 @@
         </h1>
     </li>
 </ol>
+<h2 class="heading heading_1">
+    Your Tracking Number: {{$order->customer__id}}
+</h2>
+<section class="bag row">
+    <figure class="figure_table">
+        <table class="table table_checkout">
+            <caption class="table__caption">Your Pizzas</caption>
+            <colgroup class="table__colgroup">
+                <col class="table__col table__col-40">
+                <col class="table__col table__col-20">
+                <col class="table__col table__col-20">
+                <col class="table__col table__col-20">
+            </colgroup>
+            <thead class="table__thead">
+                <tr class="table__tr">
+                    <th class="table__th">Pizza</th>
+                    <th class="table__th">Size</th>
+                    <th class="table__th">Number</th>
+                    <th class="table__th">Price, $</th>
+                </tr>
+            </thead>
+            <tfoot class="table__tfoot">
+                <tr class="table__tr">
+                    <th class="table__th" colspan="3">Total</th>
+                    <th class="table__th">
+                        <details>
+                            <summary class="form__summary">
+                                {{$pizzas__total}}
+                            </summary>
+                            €{{$pizzas__total_euro}}
+                        </details>
+                    </th>
+                </tr>
+            </tfoot>
+            <tbody class="table__tbody">
+                @foreach ($pizzas as $pizza)
+                <tr class="table__tr">
+                    <td class="table__td">
+                        <details>
+                            <summary class="form__summary">
+                                {{ $pizza->name }}
+                            </summary>
+                            {{ $pizza->description }}
+                        </details>
+                    </td>
+                    <td class="table__td">
+                        {{$sizes[$pizza->pizza__size_id]->name}}
 
-@if ($errors->any())
-<section class="text alert alert-danger" role="alert">
-    Please fix the following errors:
-    {{ $errors}}
+                    </td>
+                    <td class="table__td">
+                        {{ $pizza->pizza__quantity }}
+                    </td>
+                    <td class="table__td">
+                        <details>
+                            <summary class="form__summary">
+                                <span title="Total Price">{{ $pizza->total_price }}</span>
+                            </summary>
+                            <span title="Initial Price">{{ $pizza->price }}</span> * <span
+                                title="Size">{{ $pizza->weight }}</span> * <span
+                                title="Quantity">{{ $pizza->pizza__quantity }}</span> =<span
+                                title="Total Price">{{ $pizza->total_price }}</span>
+                        </details>
+                    </td>
+                </tr> @endforeach <tr class="table__tr">
+                    <td class="table__td" colspan="3">
+                        Subtotal
+                    </td>
+                    <td class="table__td">{{$pizzas__subtotal}}</td>
+                </tr>
+                <tr class="table__tr">
+                    <td class="table__td" colspan="3">
+                        Shipping
+                    </td>
+                    <td class="table__td">{{$pizzas__shipping}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </figure>
 </section>
-@endif
-@if($errors->has('checkout_submit-button'))
-<span class="help-block">{{ $errors->first('checkout_submit-button') }}</span>
-@endif
-@if($errors->has('add__pizza_submit-button'))
-<span class="help-block">{{ $errors->first('add__pizza_submit-button') }}</span>
-@endif
-
-<form action="bag/update" class="form" method="post">
-    {!! csrf_field() !!}
-    <section class="bag row">
-        <figure class="figure_table">
-            <table class="table table_checkout">
-                <caption class="table__caption">Your Pizzas</caption>
-                <colgroup class="table__colgroup">
-                    <col class="table__col table__col-40">
-                    <col class="table__col table__col-20">
-                    <col class="table__col table__col-20">
-                    <col class="table__col table__col-20">
-                </colgroup>
-                <thead class="table__thead">
-                    <tr class="table__tr">
-                        <th class="table__th">Pizza</th>
-                        <th class="table__th">Size</th>
-                        <th class="table__th">Number</th>
-                        <th class="table__th">Price, $</th>
-                    </tr>
-                </thead>
-                <tfoot class="table__tfoot">
-                    <tr class="table__tr">
-                        <th class="table__th" colspan="3">Total</th>
-                        <th class="table__th">{{$pizzas__total}}</th>
-                    </tr>
-                </tfoot>
-                <tbody class="table__tbody">
-                    @foreach ($pizzas as $pizza)
-                    <tr class="table__tr">
-                        <td class="table__td">
-                            <details>
-                                <summary class="form__summary">
-                                    {{ $pizza->name }}
-                                </summary>
-                                {{ $pizza->description }}
-                            </details>
-                        </td>
-                        <td class="table__td">
-                            {{$sizes[$pizza->pizza__size_id]->name}}
-
-                        </td>
-                        <td class="table__td">
-                            {{ $pizza->pizza__quantity }}
-                        </td>
-                        <td class="table__td">
-                            <details>
-                                <summary class="form__summary">
-                                    <span title="Total Price">{{ $pizza->total_price }}</span>
-                                </summary>
-                                <span title="Initial Price">{{ $pizza->price }}</span> * <span
-                                    title="Size">{{ $pizza->weight }}</span> * <span
-                                    title="Quantity">{{ $pizza->pizza__quantity }}</span> =<span
-                                    title="Total Price">{{ $pizza->total_price }}</span>
-                            </details>
-                        </td>
-                    </tr> @endforeach <tr class="table__tr">
-                        <td class="table__td" colspan="3">
-                            Subtotal
-                        </td>
-                        <td class="table__td">{{$pizzas__subtotal}}</td>
-                    </tr>
-                    <tr class="table__tr">
-                        <td class="table__td" colspan="3">
-                            Shipping
-                        </td>
-                        <td class="table__td">{{$pizzas__shipping}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </figure>
-    </section>
-</form>
+<section class="bag row">
+    <figure class="figure_table">
+        <table class="table table_checkout">
+            <caption class="table__caption">Bill</caption>
+            <colgroup class="table__colgroup">
+                <col class="table__col table__col-20">
+                <col class="table__col table__col-80">
+            </colgroup>
+            <tbody class="table__tbody">
+                <tr class="table__tr">
+                    <td class="table__td">
+                        Payment
+                    </td>
+                    <td class="table__td">{{$order->payment}}</td>
+                </tr>
+                <tr class="table__tr">
+                    <td class="table__td">
+                        Comments
+                    </td>
+                    <td class="table__td">{{$order->comments}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </figure>
+</section>
 
 @endsection

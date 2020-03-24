@@ -151,6 +151,7 @@ Route::get('/bag', function (Request $request) {
             'pizzas__shipping' => $pizzas__shipping,
             'pizzas__total' => $pizzas__total,
             'order__id' => $order->id,
+            'order' => $order,
         ]
     );
 });
@@ -267,6 +268,7 @@ Route::post('/bag', function (Request $request) {
             'pizzas__shipping' => $pizzas__shipping,
             'pizzas__total' => $pizzas__total,
             'order__id' => $order->id,
+            'order' => $order,
         ]
     );
 });
@@ -317,6 +319,19 @@ Route::post('/bag/update', function (Request $request) {
                     ]
                 );
         }
+        $pizza__payment_method = $request->input('pizza__payment-method');
+        $comments = $request->input('comments');
+        $affected = DB::table('orders')
+            ->where('id', $order->id)
+            ->where('customer__id', (int) $customer__id)
+            ->where('open', 1)
+            ->update(
+                [
+                    'payment' => (int) $pizza__payment_method,
+                    'comments' => $comments
+                ]
+            );
+
         return redirect('/bag');
     } else {
         return redirect('/');
@@ -403,6 +418,7 @@ Route::get('/checkout', function (Request $request) {
     $pizzas__subtotal = $pizzas__price;
     $pizzas__shipping = $pizzas__subtotal * 0.10;
     $pizzas__total = $pizzas__subtotal + $pizzas__shipping;
+    $pizzas__total_euro = $pizzas__total * 1.25;
 
     /**
      * | 2.6 Show bill draft and allow to choose size, etc.
@@ -416,6 +432,8 @@ Route::get('/checkout', function (Request $request) {
             'pizzas__shipping' => $pizzas__shipping,
             'pizzas__total' => $pizzas__total,
             'order__id' => $order->id,
+            'order' => $order,
+            'pizzas__total_euro' => $pizzas__total_euro,
         ]
     );
 });
