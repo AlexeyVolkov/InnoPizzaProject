@@ -23,15 +23,19 @@
     position: relative;
     border: none;
 }
+.form__fieldset_responsive {
+    width: 100%;
+    overflow: auto;
+    @media (min-width: @ipad) {
+        width: 80%;
+    }
+    @media (min-width: @desktop) {
+        width: 60%;
+    }
+}
 .form__legend {
-    // position: relative;
-    // left: -5%;
-    // margin: 0.3rem 0;
-    // padding: 0.1rem 0;
-    // border-bottom: thin solid @black;
-    // color: #595959;
-    // font-size: 0.75rem;
-    display: none;
+    opacity: 0;
+    height: 0;
 }
 
 .form__abbr[aria-label="required"] {
@@ -75,6 +79,7 @@
     text-align: justify;
     clear: both;
     hanging-punctuation: first force-end last;
+    display: block;
 
     @media print {
         color: black;
@@ -114,7 +119,7 @@
     width: auto !important;
 }
 .form__input_width-small {
-    width: auto !important;
+    width: 4em !important;
     @media (min-width: @ipad) {
         width: 4.5em !important;
     }
@@ -243,24 +248,65 @@
 .checkbox_big {
     appearance: none;
     background-color: @white;
-    border: thin solid @black;
+    border: medium solid @link__color;
     padding: 1rem;
 
     &:active,
     &:checked:active {
         background-color: #eee;
+        border-color: @link__color_hover;
     }
 
+    &:hover,
+    &:focus {
+        border-color: @link__color_hover;
+    }
     &:checked,
     &:checked:focus-within {
         background-color: #eee;
+        border-color: @link__color_hover;
         position: relative;
-        // overflow: hidden;
+        background-color: @black;
+        color: white;
     }
 
     &:checked:after {
-        content: "\2714";
-        font-size: 2rem;
+        content: "\2705";
+        font-size: 1.5em;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+.radio_big {
+    appearance: none;
+    background-color: @white;
+    border: medium solid @link__color;
+    border-radius: 50%;
+    padding: 1rem;
+
+    &:active,
+    &:checked:active {
+        background-color: #eee;
+        border-color: @link__color_hover;
+    }
+
+    &:hover,
+    &:focus {
+        border-color: @link__color_hover;
+    }
+    &:checked,
+    &:checked:focus-within {
+        background-color: #eee;
+        border-color: @link__color_hover;
+        position: relative;
+        background-color: @black;
+        color: white;
+    }
+
+    &:checked:after {
+        content: "\1F518";
+        font-size: 1.5em;
         position: absolute;
         top: 0;
         left: 0;

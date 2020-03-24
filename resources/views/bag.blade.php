@@ -1,17 +1,17 @@
 @extends('layouts.app')
 @section('content')
 <ol start="1" class="links links_row">
-    <li class="heading_3">
-        <a href="./" class="link heading heading_3 heading_inline title m-b-md">
+    <li class="links__item heading_3">
+        <a href="./" class="link heading_3 heading_inline title m-b-md">
             <- Choose Pizza </a>
     </li>
-    <li class="heading_1">
+    <li class="links__item heading_1">
         <h1 class="heading heading_1 heading_inline title m-b-md">
             Review Bag:
         </h1>
     </li>
-    <li class="heading_3" value="4">
-        <a href="./checkout" class="link heading_3 heading_inline">
+    <li class="links__item heading_3 links__item_full" value="4">
+        <a href="./checkout" class="link link_big text_mono heading_3">
             Checkout ->
         </a>
     </li>
@@ -111,7 +111,7 @@
     </section>
 
     <section class="row">
-        <fieldset class="form__fieldset">
+        <fieldset class="form__fieldset form__fieldset_responsive">
             <legend class="form__legend">Your bag</legend>
             <dl class="form-group">
                 <dt class="form__dt">
@@ -119,15 +119,15 @@
                 </dt>
                 <dd class="form__dd">
                     <div class="flex-row">
-                        <input class="form__input" id="pizza__payment-method_bank" name="pizza__payment-method"
-                            title="PizzaHub's courier has a terminal" type="radio" value="1"><label class="form__label"
-                            for="pizza__payment-method_bank">Bank Card</label>
+                        <input class="form__input radio_big" id="pizza__payment-method_bank"
+                            name="pizza__payment-method" title="PizzaHub's courier has a terminal" type="radio"
+                            value="1"><label class="form__label" for="pizza__payment-method_bank">Bank Card</label>
                         <small class="form__text_muted form__text_small">PizzaHub's courier has a terminal.</small>
                     </div>
                     <div class="flex-row">
-                        <input class="form__input" id="pizza__payment-method_cash" name="pizza__payment-method"
-                            title="PizzaHub's courier has change" type="radio" value="2">
-                        <label class="form__label" for="pizza__payment-method_cash">Cash</label>
+                        <input class="form__input radio_big" id="pizza__payment-method_cash"
+                            name="pizza__payment-method" title="PizzaHub's courier has change" type="radio"
+                            value="2"><label class="form__label" for="pizza__payment-method_cash">Cash</label>
                         <small class="form__text_muted form__text_small">PizzaHub's courier has change.</small>
                     </div>
                 </dd>
@@ -147,16 +147,30 @@
                 <dt class="form__dt"></dt>
                 <dd class="form__dd">
                     <input type="hidden" name="order__id" value="{{$order__id}}">
-                    <button class="form__button heading heading_3 heading_inline" name="checkout_recalculate-button"
-                        type="submit" value="1">
+                    <button class="form__button heading heading_3 heading_inline text_mono"
+                        name="checkout_recalculate-button" type="submit" value="1">
                         03. Recalculate sum
                     </button>
                 </dd>
             </dl>
         </fieldset>
     </section>
-
-
-
 </form>
+
+<ol start="1" class="links links_row block_hide-ipad">
+    <li class="links__item heading_3">
+        <a href="./" class="link heading_3 heading_inline title m-b-md">
+            <- Choose Pizza </a>
+    </li>
+    <li class="links__item heading_1">
+        <h1 class="heading heading_1 heading_inline title m-b-md">
+            Review Bag:
+        </h1>
+    </li>
+    <li class="links__item heading_3 links__item_full" value="4">
+        <a href="./checkout" class="link link_big text_mono heading_3">
+            Checkout ->
+        </a>
+    </li>
+</ol>
 @endsection

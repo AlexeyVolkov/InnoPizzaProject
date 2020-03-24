@@ -6,6 +6,7 @@
 @import "form.less";
 @import "figure.less";
 @import "table.less";
+@import "pizza.less";
 
 body {
     font-family: @arial;
@@ -13,11 +14,13 @@ body {
     hyphens: auto;
     overflow-wrap: break-word;
     line-height: 1.4;
+    color: @black;
 
     @media print {
         font-weight: 900;
         color: black;
         line-height: 1.5;
+        background: white;
     }
 }
 .table__td,

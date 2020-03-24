@@ -16,7 +16,7 @@
         </h1>
     </li>
 </ol>
-<h2 class="heading heading_1">
+<h2 class="heading heading_1 heading_highlight">
     Your Tracking Number: {{$order->customer__id}}
 </h2>
 <section class="bag row">
@@ -108,7 +108,7 @@
                     <td class="table__td">
                         Payment
                     </td>
-                    <td class="table__td">{{$order->payment}}</td>
+                    <td class="table__td">{{$payment}}</td>
                 </tr>
                 <tr class="table__tr">
                     <td class="table__td">

@@ -1,0 +1,35 @@
+.pizza__block {
+    width: 15rem;
+    border-radius: 0.5rem;
+
+    background-color: white;
+    border: thin solid transparent;
+    box-shadow: 0 0 1rem @light_shadow;
+
+    font-family: @arial;
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+        border-color: @black;
+    }
+
+    @media (min-width: @ipad) {
+        width: 17em;
+    }
+    @media (min-width: @desktop) {
+        width: 18em;
+    }
+}
+.pizza__price {
+    width: 20%;
+    text-align: left;
+}
+.pizza__add {
+    width: 80%;
+    text-align: right;
+}
+.pizza__figure {
+    box-shadow: inset 0 0 0.5rem @light_shadow;
+    background-color: lighten(@light_shadow, 10%);
+}
