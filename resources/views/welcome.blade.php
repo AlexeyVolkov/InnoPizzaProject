@@ -37,7 +37,7 @@
                 <legend class="form__legend">{{ $pizza->name }}</legend>
                 <h3 class="heading heading_3">{{ $pizza->name }}</h3>
                 <figure aria-label="{{ $pizza->name }}" role="figure" class="figure pizza__figure">
-                    <img alt="{{ $pizza->name }}" src="" class="img figure__img">
+                    <img alt="{{ $pizza->name }}" src="{{ $pizza->img_url }}" class="img figure__img">
                     <figcaption class="figure__figcaption screen-reader-text">{{ $pizza->name }}</figcaption>
                 </figure>
                 <div class="row row_row">

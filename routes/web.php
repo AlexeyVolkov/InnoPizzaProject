@@ -147,9 +147,15 @@ Route::get('/bag', function (Request $request) {
         [
             'pizzas' => $pizzas,
             'sizes' => $sizes,
-            'pizzas__subtotal' => $pizzas__subtotal,
-            'pizzas__shipping' => $pizzas__shipping,
-            'pizzas__total' => $pizzas__total,
+            'pizzas__subtotal' => round(
+                $pizzas__subtotal,
+                1
+            ),
+            'pizzas__shipping' => round(
+                $pizzas__shipping,
+                1
+            ),
+            'pizzas__total' => round($pizzas__total, 1),
             'order__id' => $order->id,
             'order' => $order,
         ]
@@ -264,9 +270,18 @@ Route::post('/bag', function (Request $request) {
         [
             'pizzas' => $pizzas,
             'sizes' => $sizes,
-            'pizzas__subtotal' => $pizzas__subtotal,
-            'pizzas__shipping' => $pizzas__shipping,
-            'pizzas__total' => $pizzas__total,
+            'pizzas__subtotal' => round(
+                $pizzas__subtotal,
+                1
+            ),
+            'pizzas__shipping' => round(
+                $pizzas__shipping,
+                1
+            ),
+            'pizzas__total' => round(
+                $pizzas__total,
+                1
+            ),
             'order__id' => $order->id,
             'order' => $order,
         ]
@@ -423,6 +438,9 @@ Route::get('/checkout', function (Request $request) {
     $pizzas__total = $pizzas__subtotal + $pizzas__shipping;
     $pizzas__total_euro = $pizzas__total * 1.25;
     $payment = array(1 => 'Bank Card', 2 => 'Cash');
+    if (!$order->payment) {
+        $order->payment = 1;
+    }
 
     /**
      * | 2.6 Show bill draft and allow to choose size, etc.
@@ -432,12 +450,15 @@ Route::get('/checkout', function (Request $request) {
         [
             'pizzas' => $pizzas,
             'sizes' => $sizes,
-            'pizzas__subtotal' => $pizzas__subtotal,
-            'pizzas__shipping' => $pizzas__shipping,
-            'pizzas__total' => $pizzas__total,
+            'pizzas__subtotal' => round($pizzas__subtotal, 1),
+            'pizzas__shipping' => round(
+                $pizzas__shipping,
+                1
+            ),
+            'pizzas__total' => round($pizzas__total, 1),
             'order__id' => $order->id,
             'order' => $order,
-            'pizzas__total_euro' => $pizzas__total_euro,
+            'pizzas__total_euro' => round($pizzas__total_euro, 1),
             'payment' => $payment[$order->payment],
         ]
     );

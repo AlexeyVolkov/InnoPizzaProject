@@ -1,3 +1,7 @@
+## Sources
+
+https://www5.pizzapizza.ca/catalog/products/meat-favourites-12020/store/1/delivery
+
 ## Console
 
 ```
@@ -20,6 +24,8 @@ php artisan make:seeder OrdersTableSeeder
 php artisan make:seeder OrderedPizzasTableSeeder
 
 php artisan migrate:fresh --seed
+
+php artisan make:test AddPizzasTest
 ```
 
 <dl class="form-group">

@@ -10,6 +10,6 @@ $factory->define(Pizza::class, function (Faker $faker) {
         'name' => $faker->colorName,
         'img_url' => $faker->imageUrl($width = 640, $height = 480),
         'description' => $faker->paragraph,
-        'price' => $faker->randomNumber(2),
+        'price' => '1.0',
     ];
 });
