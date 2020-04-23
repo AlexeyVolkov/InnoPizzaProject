@@ -8,89 +8,30 @@
 
 -   `./dump.sql`
 
-## Core Logic Flow
+## Schema
 
-1. If `Customer` exists -> skip steps
-1. Create new `Customer`
-1. If `Customer` has open `Orders` -> skip steps
-1. Get `Pizzas` selected by `Customer`
-1. Create new `Order`
-1. Calculate prices
+### Models
 
-## Core Code Flow
+-   Pizzas
+-   Customers
+-   Orders
+-   Ordered Pizzas
+-   PizzaSizes
+-   Payments
 
-```php
-Route::get('/'
-    return view(
-        'welcome',
-        [
-            'pizzas' => \App\Pizza::all(),
-        ]
-    );
-});
-```
+## Algo
 
-```php
-Route::get('/bag'
-$pizzas = DB::table('pizzas')
-            ->selectRaw('pizzas.*, ordered_pizzas.*, sizes.weight,  pizzas.price * ordered_pizzas.pizza__quantity * sizes.weight as total_price')
-            ->join('ordered_pizzas', 'pizzas.id', '=', 'ordered_pizzas.pizza__id')
-            ->join('sizes', 'ordered_pizzas.pizza__size_id', '=', 'sizes.id')
-            ->where('ordered_pizzas.order__id', $order->id)
-            ->get();
-return view(
-    'bag',
-    [
-        'pizzas' => $pizzas,
-        'sizes' => $sizes,
-        'pizzas__subtotal' => round(
-            $pizzas__subtotal,
-            1
-        ),
-        'pizzas__shipping' => round(
-            $pizzas__shipping,
-            1
-        ),
-        'pizzas__total' => round($pizzas__total, 1),
-        'order__id' => $order->id,
-        'order' => $order,
-    ]
-);
-```
-
-```php
-Route::post('/bag/update'
-DB::table('ordered_pizzas')
-    ->where('pizza__id', (int) $pizza['id'])
-    ->where('order__id', (int) $order->id)
-    ->update(
-        [
-            'pizza__quantity' => (int) $pizza['number'],
-            'pizza__size_id' => (int) $pizza['size']
-        ]
-    );
-```
-
-```php
-Route::get('/checkout'
-return view(
-    'checkout',
-    [
-        'pizzas' => $pizzas,
-        'sizes' => $sizes,
-        'pizzas__subtotal' => round($pizzas__subtotal, 1),
-        'pizzas__shipping' => round(
-            $pizzas__shipping,
-            1
-        ),
-        'pizzas__total' => round($pizzas__total, 1),
-        'order__id' => $order->id,
-        'order' => $order,
-        'pizzas__total_euro' => round($pizzas__total_euro, 1),
-        'payment' => $payment[$order->payment],
-    ]
-);
-```
+-   show all pizzas get::'/pizzas'
+-   add new customer id post::'/customer/'['customer'=>{id}]
+    and get {Customer customer}
+-   customer chooses pizzas and put it in a bag in vuejs
+-   customer procceds to checkout post::'/order'[?customer={customer_id}&ordered_pizzas={ordered_pizzas}]
+    and got the response as {order_id}
+    and got the response as {Array pizzas, checks}
+-   show delivery options get::'/delivery'
+-   show payment options get::'/payment'
+-   customer chooses delivery and payment post::'/order/update'?customer={customer_id}&ordered_pizzas={Array pizzas(pizza_id, size_id, Array topping_ids)}&payment={payment_id}&delivery={delivery_id}
+    and got the response as {Array pizzas, checks, success_info}
 
 ## Check List
 
@@ -125,11 +66,7 @@ Total: 40 hours
 ## Console
 
 ```
-php artisan make:migration create_pizzas_table --create=pizzas
-php artisan make:migration create_sizes_table --create=sizes
-php artisan make:migration create_customers_table --create=customers
-php artisan make:migration create_orders_table --create=orders
-php artisan make:migration create_ordered_pizzas_table --create=ordered_pizzas
+php artisan make:migration create_pizzeria_tables --create=pizzas
 
 php artisan make:model --factory Pizza
 php artisan make:model --factory Size
@@ -142,6 +79,8 @@ php artisan make:seeder CustomersTableSeeder
 php artisan make:seeder PizzasTableSeeder
 php artisan make:seeder OrdersTableSeeder
 php artisan make:seeder OrderedPizzasTableSeeder
+
+php artisan make:controller OrderController --resource --model=Order
 
 php artisan migrate:fresh --seed
 
