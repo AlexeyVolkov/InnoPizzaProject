@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Pizza;
+use App\Size;
+use App\Topping;
 use Illuminate\Http\Request;
 
 class PizzaController extends Controller
@@ -15,7 +17,13 @@ class PizzaController extends Controller
     public function index()
     {
         $pizzas = Pizza::all();
-        return response()->json(['data' => $pizzas], 200);
+        $sizes = Size::all();
+        $toppings = Topping::all();
+        return response()->json([
+            'pizzas' => $pizzas,
+            'sizes' => $sizes,
+            'toppings' => $toppings
+        ], 200);
     }
 
     /**
@@ -25,7 +33,7 @@ class PizzaController extends Controller
      */
     public function create()
     {
-        return response()->json(['data' => array('Show the form for creating a new resource.')], 200);
+        //
     }
 
     /**
@@ -36,7 +44,7 @@ class PizzaController extends Controller
      */
     public function store(Request $request)
     {
-        return response()->json(['data' => array('add')], 200);
+        //
     }
 
     /**
@@ -47,7 +55,7 @@ class PizzaController extends Controller
      */
     public function show(Pizza $pizza)
     {
-        return response()->json(['data' => array('show')], 200);
+        //
     }
 
     /**
@@ -58,7 +66,7 @@ class PizzaController extends Controller
      */
     public function edit(Pizza $pizza)
     {
-        return response()->json(['data' => array('Show the form for editing the specified resource.')], 200);
+        //
     }
 
     /**
@@ -70,7 +78,7 @@ class PizzaController extends Controller
      */
     public function update(Request $request, Pizza $pizza)
     {
-        return response()->json(['data' => array('Update the specified resource in storage.')], 200);
+        //
     }
 
     /**

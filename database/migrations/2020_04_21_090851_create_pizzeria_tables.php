@@ -74,6 +74,7 @@ class CreatePizzeriaTables extends Migration
             $table->unsignedBigInteger('size_id');
             $table->unsignedBigInteger('topping_id');
             $table->integer('quantity')->default(1);
+            $table->float('price')->default(0.0);
             $table->timestamps();
             $table->softDeletes();
 

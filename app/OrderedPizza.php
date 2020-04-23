@@ -23,6 +23,16 @@ class OrderedPizza extends Model
 
     public function pizza()
     {
-        return $this->hasOne('App\Pizza');
+        return $this->hasOne('App\Pizza', 'id', 'pizza_id');
+    }
+
+    public function size()
+    {
+        return $this->hasOne('App\Size', 'id', 'size_id');
+    }
+
+    public function topping()
+    {
+        return $this->hasOne('App\Topping', 'id', 'topping_id');
     }
 }

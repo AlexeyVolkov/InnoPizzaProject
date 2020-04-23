@@ -22,14 +22,13 @@
 ## Algo
 
 -   show all pizzas get::'/pizzas'
--   add new customer id post::'/customer/'['customer'=>{id}]
-    and get {Customer customer}
+    and get {pizzas, sizes, toppings}
+-   add get customer by id get::'/customer/' JSON:['customer'=>{id}]
+    or new post::'/customer/'
+    and get {customer}
 -   customer chooses pizzas and put it in a bag in vuejs
--   customer procceds to checkout post::'/order'[?customer={customer_id}&ordered_pizzas={ordered_pizzas}]
-    and got the response as {order_id}
-    and got the response as {Array pizzas, checks}
--   show delivery options get::'/delivery'
--   show payment options get::'/payment'
+-   customer procceds to checkout post::'/order' JSON:[?customer={customer_id}&ordered_pizzas={ordered_pizzas}]
+    and got the response as {order_id, pizzas, checks, deliveries, payments}
 -   customer chooses delivery and payment post::'/order/update'?customer={customer_id}&ordered_pizzas={Array pizzas(pizza_id, size_id, Array topping_ids)}&payment={payment_id}&delivery={delivery_id}
     and got the response as {Array pizzas, checks, success_info}
 

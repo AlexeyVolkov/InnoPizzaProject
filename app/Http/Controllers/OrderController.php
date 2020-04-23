@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Order;
 use App\Customer;
 use App\OrderedPizza;
+use App\Delivery;
+use App\Payment;
+use App\Pizza;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -37,7 +40,6 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $rules = [
             'customer' => 'required|numeric|min:1',
             'ordered_pizzas' => 'required|array',
@@ -63,21 +65,18 @@ class OrderController extends Controller
             //     'ordered_pizzas' => [
             //         [
             //             'pizza_id' => 3,
-            //             'order_id' => 1,
             //             'size_id' => 1,
             //             'topping_id' => 1,
             //             'quantity' => 45
             //         ],
             //         [
             //             'pizza_id' => 3,
-            //             'order_id' => 1,
             //             'size_id' => 1,
             //             'topping_id' => 1,
             //             'quantity' => 45
             //         ],
             //         [
             //             'pizza_id' => 3,
-            //             'order_id' => 1,
             //             'size_id' => 1,
             //             'topping_id' => 1,
             //             'quantity' => 45
@@ -85,9 +84,23 @@ class OrderController extends Controller
             //     ]
             // ];
             // Insert Ordered Pizzas
-            $pizzas = $order->orderedPizzas()->createMany($request->input('ordered_pizzas'));
+            $ordered_pizzas = $order->orderedPizzas()->createMany($request->input('ordered_pizzas'));
 
-            return response()->json(['order' => $order, 'pizzas' => $pizzas], 200);
+            // add total price
+            foreach ($ordered_pizzas as $ordered_pizza) {
+                $price = $ordered_pizza->pizza()->first()->price
+                    * $ordered_pizza->size()->first()->weight
+                    * $ordered_pizza->topping()->first()->weight
+                    * $ordered_pizza->quantity;
+                $ordered_pizza->price = round($price, 2);
+                $ordered_pizza->save();
+            }
+
+            $ordered_pizzas = $order->orderedPizzas()->get();
+            return response()->json([
+                'order' => $order,
+                'ordered_pizzas' => $ordered_pizzas,
+            ], 200);
         }
     }
 
@@ -122,7 +135,34 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        //
+        // $array = [
+        //     'payment' => 1,
+        //     'delivery' => 2
+        // ];
+        $rules = [
+            'payment' => 'required|numeric|min:1',
+            'delivery' => 'required|numeric|min:1',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            dd($validator->errors());
+        }
+
+        $order->update(
+            [
+                'payment_id' => $request->input('payment'),
+                'delivery_id' => $request->input('delivery'),
+            ]
+        );
+        // Get texts
+        $order->payment_label = $order->payment()->first()->name;
+        $order->delivery_label = $order->delivery()->first()->name;
+
+        return response()->json([
+            'order' => $order,
+            'ordered_pizzas' => $order->orderedPizzas()->get(),
+        ], 200);
     }
 
     /**

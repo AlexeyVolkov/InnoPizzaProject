@@ -35,22 +35,9 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'customer' => 'required|numeric|gt:0',
-        ]);
-        $customer_id = $request->input('customer');
-        // TODO: hashing ids
-        $customer_exists = Customer::where('id', $customer_id)->exists();
-        if ($customer_exists) {
-            $customer = Customer::where('id', $customer_id)->get();
-            // customer exists -> return its ID
-            return response()->json(['customer' => $customer], 200);
-        } else {
-            // new customer
-            // create and return ID
-            $customer = Customer::create();
-            return  response()->json(['customer' => $customer], 200);
-        }
+        $customer = Customer::create();
+
+        return  response()->json(['customer' => $customer], 200);
     }
 
     /**
@@ -61,7 +48,7 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        //
+        return response()->json(['customer' => $customer]);
     }
 
     /**
