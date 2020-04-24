@@ -1,6 +1,5 @@
 <?php
 
-use App\Payment;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CustomerSeeder::class,
             PaymentSeeder::class,
+            DeliverySeeder::class,
             SizeSeeder::class,
             ToppingSeeder::class
         ]);

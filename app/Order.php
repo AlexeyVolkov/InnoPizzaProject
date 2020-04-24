@@ -12,6 +12,7 @@ class Order extends Model
         'customer_id',
         'open',
         'payment_id',
+        'delivery_id',
         'comments',
     ];
 
@@ -22,6 +23,10 @@ class Order extends Model
     public function payment()
     {
         return $this->belongsTo('App\Payment');
+    }
+    public function delivery()
+    {
+        return $this->belongsTo('App\Delivery');
     }
     public function orderedPizzas()
     {

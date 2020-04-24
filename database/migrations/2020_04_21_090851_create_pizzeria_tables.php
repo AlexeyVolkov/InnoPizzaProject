@@ -53,11 +53,19 @@ class CreatePizzeriaTables extends Migration
             $table->softDeletes();
         });
 
+        Schema::create('deliveries', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name')->default('')->comment('Delivery type');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('customer_id')->default(0);
             $table->boolean('open')->default(false);
             $table->unsignedBigInteger('payment_id')->default(1);
+            $table->unsignedBigInteger('delivery_id')->default(1);
             $table->text('comments')->default('');
             $table->timestamps();
             $table->softDeletes();
@@ -65,6 +73,7 @@ class CreatePizzeriaTables extends Migration
 
             $table->foreign('customer_id')->references('id')->on('customers');
             $table->foreign('payment_id')->references('id')->on('payments');
+            $table->foreign('delivery_id')->references('id')->on('deliveries');
         });
 
         Schema::create('ordered_pizzas', function (Blueprint $table) {
@@ -99,6 +108,7 @@ class CreatePizzeriaTables extends Migration
         Schema::dropIfExists('orders');
         Schema::dropIfExists('ordered_pizzas');
         Schema::dropIfExists('payments');
+        Schema::dropIfExists('deliveries');
         Schema::dropIfExists('toppings');
     }
 }
