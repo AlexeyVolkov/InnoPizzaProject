@@ -39,7 +39,7 @@
 					</form>
 				</section>
 			</header>
-			<main class="row">
+			<main class="container">
 				@yield('content')
 			</main>
 		</div>

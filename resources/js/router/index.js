@@ -1,21 +1,21 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import Home from "../components/Home.vue";
-import About from "../components/About.vue";
+import PizzaList from "../views/PizzaList.vue";
+import PizzaShow from "../views/PizzaShow.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
     {
         path: "/",
-        name: "Home",
-        component: Home
+        name: "PizzaList",
+        component: PizzaList
     },
     {
-        path: "/about",
-        name: "About",
-        component: About
+        path: "/pizza/:id",
+        name: "PizzaShow",
+        component: PizzaShow
     }
 ];
 
