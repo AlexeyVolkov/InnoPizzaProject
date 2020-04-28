@@ -5,24 +5,24 @@ export const namespaced = true;
 export const state = {
 	pizzas: [],
 	pizzasTotal: 0,
-	event: {}
+	pizza: {}
 };
 export const mutations = {
-	ADD_EVENT(state, pizza) {
+	ADD_PIZZA(state, pizza) {
 		state.pizzas.push(pizza);
 	},
-	SET_EVENTS(state, pizzas) {
+	SET_PIZZAS(state, pizzas) {
 		state.pizzas = pizzas;
 	},
-	SET_EVENT(state, pizza) {
+	SET_PIZZA(state, pizza) {
 		state.pizza = pizza;
 	}
 };
 export const actions = {
-	fetchPizzas({ commit, dispatch }, sort) {
+	fetchManyPizzas({ commit, dispatch }, sort) {
 		EventService.getPizzas(sort)
 			.then(response => {
-				commit("SET_EVENTS", response.data);
+				commit("SET_PIZZAS", response.data);
 			})
 			.catch(error => {
 				const notification = {
@@ -32,10 +32,10 @@ export const actions = {
 				dispatch("notification/add", notification, { root: true });
 			});
 	},
-	addPizzas({ commit, dispatch }, pizza) {
-		EventService.addPizzas(pizza)
+	fetchOnePizza({ commit, dispatch }, id) {
+		EventService.getPizza(id)
 			.then(response => {
-				commit("SET_EVENTS", response.data);
+				commit("SET_PIZZA", response.data);
 			})
 			.catch(error => {
 				const notification = {
@@ -44,13 +44,13 @@ export const actions = {
 				};
 				dispatch("notification/add", notification, { root: true });
 			});
-	}
+	},
 };
 export const getters = {
-	pizzasLength: state => {
+	pizzasTotal: state => {
 		return state.pizzas.length;
 	},
-	getEventById: state => id => {
+	getPizzaById: state => id => {
 		return state.pizzas.find(pizza => id === pizza.id);
 	}
 };

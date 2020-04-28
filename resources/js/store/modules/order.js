@@ -3,26 +3,29 @@ import EventService from "../../services/EventService.js";
 export const namespaced = true;
 
 export const state = {
-	pizzas: [],
-	pizzasTotal: 0,
-	event: {}
+	order: {},
+	orderedPizzas: [],
+	customer: {},
 };
 export const mutations = {
-	ADD_EVENT(state, pizza) {
-		state.pizzas.push(pizza);
+	SET_ORDER(state, order) {
+		state.order = order;
 	},
-	SET_EVENTS(state, pizzas) {
-		state.pizzas = pizzas;
+	ADD_ORDERED_PIZZA(state, ordered_pizza) {
+		state.orderedPizzas.push(ordered_pizza);
 	},
-	SET_EVENT(state, pizza) {
-		state.pizza = pizza;
-	}
+	SET_CUSTOMER(state, customer) {
+		state.customer = customer;
+	},
 };
 export const actions = {
-	fetchPizzas({ commit, dispatch }, sort) {
-		EventService.getPizzas(sort)
+	addOrderedPizza({ commit, dispatch }, ordered_pizza) {
+		commit('ADD_ORDERED_PIZZA', ordered_pizza);
+	},
+	getCustomer({ commit, dispatch }) {
+		EventService.addCustomer()
 			.then(response => {
-				commit("SET_EVENTS", response.data);
+				commit("SET_CUSTOMER", response.data);
 			})
 			.catch(error => {
 				const notification = {
@@ -32,10 +35,11 @@ export const actions = {
 				dispatch("notification/add", notification, { root: true });
 			});
 	},
-	addPizzas({ commit, dispatch }, pizza) {
-		EventService.addPizzas(pizza)
+	addOrder({ commit, dispatch }) {
+		EventService.addOrder(state.customer, state.orderedPizzas)
+			// finished here
 			.then(response => {
-				commit("SET_EVENTS", response.data);
+				commit("SET_PIZZA", response.data);
 			})
 			.catch(error => {
 				const notification = {
@@ -44,13 +48,13 @@ export const actions = {
 				};
 				dispatch("notification/add", notification, { root: true });
 			});
-	}
+	},
 };
 export const getters = {
-	pizzasLength: state => {
+	pizzasTotal: state => {
 		return state.pizzas.length;
 	},
-	getEventById: state => id => {
+	getPizzaById: state => id => {
 		return state.pizzas.find(pizza => id === pizza.id);
 	}
 };

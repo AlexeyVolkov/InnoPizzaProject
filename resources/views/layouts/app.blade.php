@@ -12,34 +12,6 @@
 
 	<body>
 		<div class="container">
-			<header class="">
-				<section class="address row justify-content-center">
-					<form action="" method="get" class="col-6">
-						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="basic-addon1"
-									>📍</span
-								>
-							</div>
-							<label class="sr-only" for="addressInput"
-								>Адрес доставки</label
-							>
-							<input
-								type="text"
-								class="form-control form-control-lg"
-								id="addressInput"
-								placeholder="Адрес доставки"
-								title="Бесконтактная доставка"
-							/>
-							<small
-								id="addressInputHelp"
-								class="sr-only form-text text-muted"
-								>Бесконтактная доставка</small
-							>
-						</div>
-					</form>
-				</section>
-			</header>
 			<main class="container">
 				@yield('content')
 			</main>

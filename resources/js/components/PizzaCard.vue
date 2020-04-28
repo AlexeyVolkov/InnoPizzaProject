@@ -14,7 +14,7 @@
           id="figure-1"
         >${{ pizza.price }}</figcaption>
       </figure>
-      <button href="#" class="btn btn-primary">+ Добавить</button>
+      <button href="#" class="btn btn-primary" v-on:click="onСlick">+ Добавить</button>
     </div>
   </div>
 </template>
@@ -23,6 +23,11 @@
 export default {
   props: {
     pizza: Object
+  },
+  methods: {
+    onClick() {
+      this.$store.dispatch("event/addPizzas", this.pizza);
+    }
   }
 };
 </script>
