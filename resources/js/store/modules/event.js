@@ -19,8 +19,8 @@ export const mutations = {
 	}
 };
 export const actions = {
-	fetchPizzas({ commit, dispatch }) {
-		EventService.getPizzas()
+	fetchPizzas({ commit, dispatch }, sort) {
+		EventService.getPizzas(sort)
 			.then(response => {
 				commit("SET_EVENTS", response.data);
 			})
@@ -34,8 +34,8 @@ export const actions = {
 	}
 };
 export const getters = {
-	catLength: state => {
-		return state.categories.length;
+	pizzasLength: state => {
+		return state.pizzas.length;
 	},
 	getEventById: state => id => {
 		return state.pizzas.find(pizza => id === pizza.id);

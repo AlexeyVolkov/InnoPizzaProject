@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Меню')
+@section('title', 'Menu')
 @section('content')
 <div id="app">
     <router-view></router-view>

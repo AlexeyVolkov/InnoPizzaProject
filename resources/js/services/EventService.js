@@ -10,8 +10,12 @@ const apiClient = axios.create({
 });
 
 export default {
-	getPizzas(perPage, page) {
-		return apiClient.get("/api/pizzas/");
+	getPizzas(sortMethod) {
+		return apiClient.get("/api/pizzas/" {
+			params: {
+				sort: sortMethod
+			}
+		});
 	},
 	getPizza(id) {
 		return apiClient.get("/events/" + id);
