@@ -25,17 +25,13 @@ export default {
 		});
 	},
 	getCustomer(id) {
-		return apiClient.get("/customer/", {
-			params: {
-				customer: id
-			}
-		});
+		return apiClient.get("/api/customer/" + id);
 	},
 	addCustomer() {
-		return apiClient.post("/customer/");
+		return apiClient.post("/api/customer/");
 	},
 	addOrder(customer, ordered_pizzas) {
-		return apiClient.post("/order/", {
+		return apiClient.post("/api/order/", {
 			params: {
 				customer: customer,
 				ordered_pizzas: ordered_pizzas,
@@ -43,7 +39,7 @@ export default {
 		});
 	},
 	updateOrder(payment, delivery) {
-		return apiClient.put("/order/", {
+		return apiClient.put("/api/order/", {
 			params: {
 				payment: payment,
 				delivery: delivery,

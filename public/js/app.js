@@ -1982,7 +1982,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     onClick: function onClick() {
-      this.$store.dispatch("event/addPizzas", this.pizza);
+      this.$store.dispatch("pizza/addPizzas", this.pizza);
     }
   }
 });
@@ -2026,14 +2026,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     PizzaCard: _components_PizzaCard_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     FiltersCard: _components_FiltersCard_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
+  data: function data() {
+    return {
+      customer_id: localStorage.customer_id
+    };
+  },
   created: function created() {
-    this.$store.dispatch("event/fetchPizzas");
+    // Pizzas
+    this.$store.dispatch("pizzaApi/fetchManyPizzas"); // Customer
+
+    if (this.customer_id && this.customer_id > 0) {
+      this.$store.dispatch("orderApi/getCustomer", this.customer_id);
+    } else {
+      // it's new Customer
+      this.$store.dispatch("orderApi/addCustomer");
+    }
   },
   computed: _objectSpread({
     page: function page() {
       return parseInt(this.$route.query.page) || 1;
     }
-  }, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapState"])(["event", "user"]))
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapState"])(["pizzaApi", "orderApi", "notification"]))
 });
 
 /***/ }),
@@ -2694,7 +2707,7 @@ var render = function() {
     _c(
       "div",
       { staticClass: "row justify-content-around" },
-      _vm._l(_vm.event.pizzas.pizzas, function(pizza) {
+      _vm._l(_vm.pizzaApi.pizzas, function(pizza) {
         return _c("PizzaCard", { key: pizza.id, attrs: { pizza: pizza } })
       }),
       1
@@ -19132,17 +19145,13 @@ var apiClient = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
     });
   },
   getCustomer: function getCustomer(id) {
-    return apiClient.get("/customer/", {
-      params: {
-        customer: id
-      }
-    });
+    return apiClient.get("/api/customer/" + id);
   },
   addCustomer: function addCustomer() {
-    return apiClient.post("/customer/");
+    return apiClient.post("/api/customer/");
   },
   addOrder: function addOrder(customer, ordered_pizzas) {
-    return apiClient.post("/order/", {
+    return apiClient.post("/api/order/", {
       params: {
         customer: customer,
         ordered_pizzas: ordered_pizzas
@@ -19150,7 +19159,7 @@ var apiClient = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
     });
   },
   updateOrder: function updateOrder(payment, delivery) {
-    return apiClient.put("/order/", {
+    return apiClient.put("/api/order/", {
       params: {
         payment: payment,
         delivery: delivery
@@ -19173,8 +19182,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _store_modules_event_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../store/modules/event.js */ "./resources/js/store/modules/event.js");
-/* harmony import */ var _store_modules_notification_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../store/modules/notification.js */ "./resources/js/store/modules/notification.js");
+/* harmony import */ var _store_modules_pizza_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../store/modules/pizza.js */ "./resources/js/store/modules/pizza.js");
+/* harmony import */ var _store_modules_order_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../store/modules/order.js */ "./resources/js/store/modules/order.js");
+/* harmony import */ var _store_modules_notification_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../store/modules/notification.js */ "./resources/js/store/modules/notification.js");
+
 
 
 
@@ -19182,93 +19193,11 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   modules: {
-    event: _store_modules_event_js__WEBPACK_IMPORTED_MODULE_2__,
-    notification: _store_modules_notification_js__WEBPACK_IMPORTED_MODULE_3__
-  },
-  state: {
-    categories: ["sustainability", "nature", "animal welfare", "housing", "education", "food", "community"]
+    pizzaApi: _store_modules_pizza_js__WEBPACK_IMPORTED_MODULE_2__,
+    orderApi: _store_modules_order_js__WEBPACK_IMPORTED_MODULE_3__,
+    notification: _store_modules_notification_js__WEBPACK_IMPORTED_MODULE_4__
   }
 }));
-
-/***/ }),
-
-/***/ "./resources/js/store/modules/event.js":
-/*!*********************************************!*\
-  !*** ./resources/js/store/modules/event.js ***!
-  \*********************************************/
-/*! exports provided: namespaced, state, mutations, actions, getters */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "namespaced", function() { return namespaced; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "state", function() { return state; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mutations", function() { return mutations; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getters", function() { return getters; });
-/* harmony import */ var _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/EventService.js */ "./resources/js/services/EventService.js");
-
-var namespaced = true;
-var state = {
-  pizzas: [],
-  pizzasTotal: 0,
-  event: {}
-};
-var mutations = {
-  ADD_EVENT: function ADD_EVENT(state, pizza) {
-    state.pizzas.push(pizza);
-  },
-  SET_EVENTS: function SET_EVENTS(state, pizzas) {
-    state.pizzas = pizzas;
-  },
-  SET_EVENT: function SET_EVENT(state, pizza) {
-    state.pizza = pizza;
-  }
-};
-var actions = {
-  fetchPizzas: function fetchPizzas(_ref, sort) {
-    var commit = _ref.commit,
-        dispatch = _ref.dispatch;
-    _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].getPizzas(sort).then(function (response) {
-      commit("SET_EVENTS", response.data);
-    })["catch"](function (error) {
-      var notification = {
-        type: "error",
-        message: error.message
-      };
-      dispatch("notification/add", notification, {
-        root: true
-      });
-    });
-  },
-  addPizzas: function addPizzas(_ref2, pizza) {
-    var commit = _ref2.commit,
-        dispatch = _ref2.dispatch;
-    _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].addPizzas(pizza).then(function (response) {
-      commit("SET_EVENTS", response.data);
-    })["catch"](function (error) {
-      var notification = {
-        type: "error",
-        message: error.message
-      };
-      dispatch("notification/add", notification, {
-        root: true
-      });
-    });
-  }
-};
-var getters = {
-  pizzasLength: function pizzasLength(state) {
-    return state.pizzas.length;
-  },
-  getEventById: function getEventById(state) {
-    return function (id) {
-      return state.pizzas.find(function (pizza) {
-        return id === pizza.id;
-      });
-    };
-  }
-};
 
 /***/ }),
 
@@ -19316,6 +19245,187 @@ var actions = {
   remove: function remove(_ref2, notificationToRemove) {
     var commit = _ref2.commit;
     commit("DELETE", notificationToRemove);
+  }
+};
+
+/***/ }),
+
+/***/ "./resources/js/store/modules/order.js":
+/*!*********************************************!*\
+  !*** ./resources/js/store/modules/order.js ***!
+  \*********************************************/
+/*! exports provided: namespaced, state, mutations, actions, getters */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "namespaced", function() { return namespaced; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "state", function() { return state; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mutations", function() { return mutations; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getters", function() { return getters; });
+/* harmony import */ var _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/EventService.js */ "./resources/js/services/EventService.js");
+
+var namespaced = true;
+var state = {
+  order: {},
+  orderedPizzas: [],
+  customer: {}
+};
+var mutations = {
+  SET_ORDER: function SET_ORDER(state, order) {
+    state.order = order;
+  },
+  ADD_ORDERED_PIZZA: function ADD_ORDERED_PIZZA(state, ordered_pizza) {
+    state.orderedPizzas.push(ordered_pizza);
+  },
+  SET_CUSTOMER: function SET_CUSTOMER(state, data) {
+    state.customer = data.customer;
+    localStorage.customer_id = data.customer.id;
+  }
+};
+var actions = {
+  addOrderedPizza: function addOrderedPizza(_ref, ordered_pizza) {
+    var commit = _ref.commit,
+        dispatch = _ref.dispatch;
+    commit('ADD_ORDERED_PIZZA', ordered_pizza);
+  },
+  getCustomer: function getCustomer(_ref2, id) {
+    var commit = _ref2.commit,
+        dispatch = _ref2.dispatch;
+    _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].getCustomer(id).then(function (response) {
+      commit("SET_CUSTOMER", response.data);
+    })["catch"](function (error) {
+      var notification = {
+        type: "error",
+        message: error.message
+      };
+      dispatch("notification/add", notification, {
+        root: true
+      });
+    });
+  },
+  addCustomer: function addCustomer(_ref3) {
+    var commit = _ref3.commit,
+        dispatch = _ref3.dispatch;
+    _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].addCustomer().then(function (response) {
+      commit("SET_CUSTOMER", response.data);
+    })["catch"](function (error) {
+      var notification = {
+        type: "error",
+        message: error.message
+      };
+      dispatch("notification/add", notification, {
+        root: true
+      });
+    });
+  },
+  addOrder: function addOrder(_ref4) {
+    var commit = _ref4.commit,
+        dispatch = _ref4.dispatch;
+    _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].addOrder(state.customer, state.orderedPizzas).then(function (response) {
+      commit("SET_ORDER", response.data);
+    })["catch"](function (error) {
+      var notification = {
+        type: "error",
+        message: error.message
+      };
+      dispatch("notification/add", notification, {
+        root: true
+      });
+    });
+  }
+};
+var getters = {
+  pizzasTotal: function pizzasTotal(state) {
+    return state.pizzas.length;
+  },
+  getPizzaById: function getPizzaById(state) {
+    return function (id) {
+      return state.pizzas.find(function (pizza) {
+        return id === pizza.id;
+      });
+    };
+  }
+};
+
+/***/ }),
+
+/***/ "./resources/js/store/modules/pizza.js":
+/*!*********************************************!*\
+  !*** ./resources/js/store/modules/pizza.js ***!
+  \*********************************************/
+/*! exports provided: namespaced, state, mutations, actions, getters */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "namespaced", function() { return namespaced; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "state", function() { return state; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mutations", function() { return mutations; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "actions", function() { return actions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getters", function() { return getters; });
+/* harmony import */ var _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/EventService.js */ "./resources/js/services/EventService.js");
+
+var namespaced = true;
+var state = {
+  pizzas: [],
+  sizes: [],
+  toppings: [],
+  pizza: {}
+};
+var mutations = {
+  SET_PIZZAS: function SET_PIZZAS(state, data) {
+    state.pizzas = data.pizzas;
+    state.sizes = data.sizes;
+    state.toppings = data.toppings;
+  },
+  SET_PIZZA: function SET_PIZZA(state, pizza) {
+    state.pizza = pizza;
+  }
+};
+var actions = {
+  fetchManyPizzas: function fetchManyPizzas(_ref, sort) {
+    var commit = _ref.commit,
+        dispatch = _ref.dispatch;
+    _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].getPizzas(sort).then(function (response) {
+      commit("SET_PIZZAS", response.data);
+    })["catch"](function (error) {
+      var notification = {
+        type: "error",
+        message: error.message
+      };
+      dispatch("notification/add", notification, {
+        root: true
+      });
+    });
+  },
+  fetchOnePizza: function fetchOnePizza(_ref2, id) {
+    var commit = _ref2.commit,
+        dispatch = _ref2.dispatch;
+    _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].getPizza(id).then(function (response) {
+      commit("SET_PIZZA", response.data);
+    })["catch"](function (error) {
+      var notification = {
+        type: "error",
+        message: error.message
+      };
+      dispatch("notification/add", notification, {
+        root: true
+      });
+    });
+  }
+};
+var getters = {
+  pizzasTotal: function pizzasTotal(state) {
+    return state.pizzas.length;
+  },
+  getPizzaById: function getPizzaById(state) {
+    return function (id) {
+      return state.pizzas.find(function (pizza) {
+        return id === pizza.id;
+      });
+    };
   }
 };
 

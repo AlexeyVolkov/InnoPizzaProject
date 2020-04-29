@@ -4,15 +4,15 @@ export const namespaced = true;
 
 export const state = {
 	pizzas: [],
-	pizzasTotal: 0,
+	sizes: [],
+	toppings: [],
 	pizza: {}
 };
 export const mutations = {
-	ADD_PIZZA(state, pizza) {
-		state.pizzas.push(pizza);
-	},
-	SET_PIZZAS(state, pizzas) {
-		state.pizzas = pizzas;
+	SET_PIZZAS(state, data) {
+		state.pizzas = data.pizzas;
+		state.sizes = data.sizes;
+		state.toppings = data.toppings;
 	},
 	SET_PIZZA(state, pizza) {
 		state.pizza = pizza;

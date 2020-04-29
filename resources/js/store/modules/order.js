@@ -14,15 +14,29 @@ export const mutations = {
 	ADD_ORDERED_PIZZA(state, ordered_pizza) {
 		state.orderedPizzas.push(ordered_pizza);
 	},
-	SET_CUSTOMER(state, customer) {
-		state.customer = customer;
+	SET_CUSTOMER(state, data) {
+		state.customer = data.customer;
+		localStorage.customer_id = data.customer.id;
 	},
 };
 export const actions = {
 	addOrderedPizza({ commit, dispatch }, ordered_pizza) {
 		commit('ADD_ORDERED_PIZZA', ordered_pizza);
 	},
-	getCustomer({ commit, dispatch }) {
+	getCustomer({ commit, dispatch }, id) {
+		EventService.getCustomer(id)
+			.then(response => {
+				commit("SET_CUSTOMER", response.data);
+			})
+			.catch(error => {
+				const notification = {
+					type: "error",
+					message: error.message
+				};
+				dispatch("notification/add", notification, { root: true });
+			});
+	},
+	addCustomer({ commit, dispatch }) {
 		EventService.addCustomer()
 			.then(response => {
 				commit("SET_CUSTOMER", response.data);
@@ -37,9 +51,8 @@ export const actions = {
 	},
 	addOrder({ commit, dispatch }) {
 		EventService.addOrder(state.customer, state.orderedPizzas)
-			// finished here
 			.then(response => {
-				commit("SET_PIZZA", response.data);
+				commit("SET_ORDER", response.data);
 			})
 			.catch(error => {
 				const notification = {

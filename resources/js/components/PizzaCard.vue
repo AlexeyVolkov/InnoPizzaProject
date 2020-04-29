@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     onClick() {
-      this.$store.dispatch("event/addPizzas", this.pizza);
+      this.$store.dispatch("pizza/addPizzas", this.pizza);
     }
   }
 };
