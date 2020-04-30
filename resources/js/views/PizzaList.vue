@@ -3,9 +3,21 @@
     <header>
       <FiltersCard />
     </header>
-    <div class="row justify-content-around">
+    <main class="row justify-content-around">
       <PizzaCard v-for="pizza in pizzaApi.pizzas" :key="pizza.id" :pizza="pizza" />
-    </div>
+    </main>
+    <aside v-if="orderApi.orderedPizzas.length > 0">
+      <h3>
+        <span class="badge badge-light">{{orderApi.orderedPizzas.length}}</span>pizzas in a bag
+      </h3>
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          v-for="pizza in orderApi.orderedPizzas"
+          :key="pizza.id"
+        >{{pizza.name}}</li>
+      </ul>
+    </aside>
   </div>
 </template>
 
@@ -18,22 +30,6 @@ export default {
   components: {
     PizzaCard,
     FiltersCard
-  },
-  data() {
-    return {
-      customer_id: localStorage.customer_id
-    };
-  },
-  created() {
-    // Pizzas
-    this.$store.dispatch("pizzaApi/fetchManyPizzas");
-    // Customer
-    if (this.customer_id && this.customer_id > 0) {
-      this.$store.dispatch("orderApi/getCustomer", this.customer_id);
-    } else {
-      // it's new Customer
-      this.$store.dispatch("orderApi/addCustomer");
-    }
   },
   computed: {
     page() {

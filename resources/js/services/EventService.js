@@ -30,6 +30,21 @@ export default {
 	addCustomer() {
 		return apiClient.post("/api/customer/");
 	},
+	getOrder(customer_id) {
+		return apiClient.get("/api/orders/", {
+			params: {
+				customer: customer_id,
+			}
+		});
+	},
+	updateOrder(order_id, ordered_pizzas) {
+		return apiClient.put("/api/orders/" + order_id, {
+			params: {
+				ordered_pizzas: ordered_pizzas,
+				// finished here
+			}
+		});
+	},
 	addOrder(customer, ordered_pizzas) {
 		return apiClient.post("/api/order/", {
 			params: {
