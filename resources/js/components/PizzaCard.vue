@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   props: {
     pizza: Object
@@ -27,7 +28,15 @@ export default {
   methods: {
     onClick() {
       this.$store.dispatch("orderApi/addOrderedPizza", this.pizza);
+      console.log(this.orderApi.orderedPizzas);
+      this.$store.dispatch("orderApi/updateOrder", {
+        order_id: this.orderApi.order.id,
+        orderedPizzas: this.orderApi.orderedPizzas
+      });
     }
+  },
+  computed: {
+    ...mapState(["orderApi"])
   }
 };
 </script>

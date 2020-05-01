@@ -4,7 +4,8 @@ export const namespaced = true;
 
 export const state = {
 	order: {},
-	orderedPizzas: [],
+	orderedPizzasToServer: [],
+	orderedPizzasToShow: [],
 	customer: {},
 };
 export const mutations = {
@@ -13,13 +14,13 @@ export const mutations = {
 	},
 	ADD_ORDERED_PIZZA(state, ordered_pizza) {
 		// add unique values
-		if (-1 === state.orderedPizzas.indexOf(ordered_pizza)) {
-			state.orderedPizzas.push(ordered_pizza);
+		if (-1 === state.orderedPizzasToServer.indexOf(ordered_pizza)) {
+			state.orderedPizzasToServer.push(ordered_pizza);
 		}
 	},
 	SET_ORDERED_PIZZAS(state, data) {
-		if (data.ordered_pizzas > 0) {
-			state.orderedPizzas = data.ordered_pizzas;
+		if (data.ordered_pizzas.length > 0) {
+			state.orderedPizzasToShow = data.ordered_pizzas;
 		}
 	},
 	SET_CUSTOMER(state, data) {
@@ -31,10 +32,12 @@ export const actions = {
 	addOrderedPizza({ commit, dispatch }, ordered_pizza) {
 		commit('ADD_ORDERED_PIZZA', ordered_pizza);
 	},
-	setOrderedPizzas({ commit, dispatch }, ordered_pizzas) {
-		EventService.setOrderedPizzas(ordered_pizzas)
+	updateOrder({ commit, dispatch }, data) {
+		console.log(data.orderedPizzas);
+		EventService.updateOrder(data)
 			.then(response => {
-				commit("SET_CUSTOMER", response.data);
+				commit("SET_ORDER", response.data);
+				commit("SET_ORDERED_PIZZAS", response.data);
 			})
 			.catch(error => {
 				const notification = {

@@ -1934,7 +1934,11 @@ __webpack_require__.r(__webpack_exports__);
 
     if (this.customer_id && this.customer_id > 0) {
       this.$store.dispatch("orderApi/getCustomer", this.customer_id);
-      this.$store.dispatch("orderApi/getOrder", this.customer_id);
+      this.$store.dispatch("orderApi/getOrder", this.customer_id); //   this.$store.dispatch(
+      //     "orderApi/updateOrder",
+      //     this.orderApi.order.id,
+      //     this.customer_id
+      //   );
     } else {
       // it's new Customer
       localStorage.setItem("customer_id", 0);
@@ -2066,6 +2070,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2087,6 +2098,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     pizza: Object
@@ -2094,8 +2106,14 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     onClick: function onClick() {
       this.$store.dispatch("orderApi/addOrderedPizza", this.pizza);
+      console.log(this.orderApi.orderedPizzas);
+      this.$store.dispatch("orderApi/updateOrder", {
+        order_id: this.orderApi.order.id,
+        orderedPizzas: this.orderApi.orderedPizzas
+      });
     }
-  }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(["orderApi"]))
 });
 
 /***/ }),
@@ -2135,8 +2153,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  created: function created() {
-    this.orderApi.orderedPizzas;
+  created: function created() {// if (this.orderApi.orderedPizzas.length > 0) {
+    //   this.$store.dispatch(
+    //     "orderApi/updateOrder",
+    //     this.orderApi.order.id,
+    //     this.orderApi.orderedPizzas
+    //   );
+    // }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(["orderApi", "notification"]))
 });
@@ -2846,7 +2869,7 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _vm.orderApi.orderedPizzas.length > 0
+            _vm.orderApi.orderedPizzasToShow.length > 0
               ? _c(
                   "li",
                   { staticClass: "nav-item" },
@@ -2996,17 +3019,17 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.orderApi.orderedPizzas.length > 0
+  return _vm.orderApi.orderedPizzasToShow.length > 0
     ? _c("table", { staticClass: "table" }, [
         _vm._m(0),
         _vm._v(" "),
         _c(
           "tbody",
-          _vm._l(_vm.orderApi.orderedPizzas, function(pizza) {
-            return _c("tr", { key: pizza.id }, [
-              _c("td", [_vm._v(_vm._s(pizza.name))]),
+          _vm._l(_vm.orderApi.orderedPizzasToShow, function(orderedPizza) {
+            return _c("tr", { key: orderedPizza.ordered_pizza.id }, [
+              _c("td", [_vm._v(_vm._s(orderedPizza.pizza.name))]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(pizza.price))])
+              _c("td", [_vm._v(_vm._s(orderedPizza.ordered_pizza.price))])
             ])
           }),
           0
@@ -3061,11 +3084,11 @@ var render = function() {
       1
     ),
     _vm._v(" "),
-    _vm.orderApi.orderedPizzas.length > 0
+    _vm.orderApi.orderedPizzasToShow.length > 0
       ? _c("aside", [
           _c("h3", [
             _c("span", { staticClass: "badge badge-light" }, [
-              _vm._v(_vm._s(_vm.orderApi.orderedPizzas.length))
+              _vm._v(_vm._s(_vm.orderApi.orderedPizzasToShow.length))
             ]),
             _vm._v("pizzas in a bag\n    ")
           ]),
@@ -3073,7 +3096,7 @@ var render = function() {
           _c(
             "ul",
             { staticClass: "list-group" },
-            _vm._l(_vm.orderApi.orderedPizzas, function(pizza) {
+            _vm._l(_vm.orderApi.orderedPizzasToShow, function(pizza) {
               return _c(
                 "li",
                 { key: pizza.id, staticClass: "list-group-item" },
@@ -19600,7 +19623,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var _views_PizzaList_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../views/PizzaList.vue */ "./resources/js/views/PizzaList.vue");
 /* harmony import */ var _views_PizzaShow_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../views/PizzaShow.vue */ "./resources/js/views/PizzaShow.vue");
-/* harmony import */ var _views_BagShow__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../views/BagShow */ "./resources/js/views/BagShow.vue");
+/* harmony import */ var _views_BagShow__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../views/BagShow */ "./resources/js/views/BagShow.vue");
 
 
 
@@ -19618,7 +19641,7 @@ var routes = [{
 }, {
   path: "/bag/",
   name: "BagShow",
-  component: _views_BagShow__WEBPACK_IMPORTED_MODULE_5__["default"]
+  component: _views_BagShow__WEBPACK_IMPORTED_MODULE_4__["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: "history",
@@ -19641,8 +19664,6 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 
 var apiClient = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
   baseURL: "http://localhost:8000/",
@@ -19652,7 +19673,7 @@ var apiClient = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
     "Content-Type": "application/json"
   }
 });
-/* harmony default export */ __webpack_exports__["default"] = (_defineProperty({
+/* harmony default export */ __webpack_exports__["default"] = ({
   getPizzas: function getPizzas(sortMethod) {
     return apiClient.get("/api/pizzas/", {
       params: {
@@ -19680,11 +19701,11 @@ var apiClient = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
       }
     });
   },
-  updateOrder: function updateOrder(order_id, ordered_pizzas) {
-    return apiClient.put("/api/orders/" + order_id, {
+  updateOrder: function updateOrder(data) {
+    console.log(data.orderedPizzas);
+    return apiClient.put("/api/orders/" + data.order_id, {
       params: {
-        ordered_pizzas: ordered_pizzas // finished here
-
+        ordered_pizzas: data.orderedPizzas
       }
     });
   },
@@ -19696,14 +19717,7 @@ var apiClient = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
       }
     });
   }
-}, "updateOrder", function updateOrder(payment, delivery) {
-  return apiClient.put("/api/order/", {
-    params: {
-      payment: payment,
-      delivery: delivery
-    }
-  });
-}));
+});
 
 /***/ }),
 
@@ -19806,7 +19820,8 @@ __webpack_require__.r(__webpack_exports__);
 var namespaced = true;
 var state = {
   order: {},
-  orderedPizzas: [],
+  orderedPizzasToServer: [],
+  orderedPizzasToShow: [],
   customer: {}
 };
 var mutations = {
@@ -19815,13 +19830,13 @@ var mutations = {
   },
   ADD_ORDERED_PIZZA: function ADD_ORDERED_PIZZA(state, ordered_pizza) {
     // add unique values
-    if (-1 === state.orderedPizzas.indexOf(ordered_pizza)) {
-      state.orderedPizzas.push(ordered_pizza);
+    if (-1 === state.orderedPizzasToServer.indexOf(ordered_pizza)) {
+      state.orderedPizzasToServer.push(ordered_pizza);
     }
   },
   SET_ORDERED_PIZZAS: function SET_ORDERED_PIZZAS(state, data) {
-    if (data.ordered_pizzas > 0) {
-      state.orderedPizzas = data.ordered_pizzas;
+    if (data.ordered_pizzas.length > 0) {
+      state.orderedPizzasToShow = data.ordered_pizzas;
     }
   },
   SET_CUSTOMER: function SET_CUSTOMER(state, data) {
@@ -19835,11 +19850,13 @@ var actions = {
         dispatch = _ref.dispatch;
     commit('ADD_ORDERED_PIZZA', ordered_pizza);
   },
-  setOrderedPizzas: function setOrderedPizzas(_ref2, ordered_pizzas) {
+  updateOrder: function updateOrder(_ref2, data) {
     var commit = _ref2.commit,
         dispatch = _ref2.dispatch;
-    _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].setOrderedPizzas(ordered_pizzas).then(function (response) {
-      commit("SET_CUSTOMER", response.data);
+    console.log(data.orderedPizzas);
+    _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].updateOrder(data).then(function (response) {
+      commit("SET_ORDER", response.data);
+      commit("SET_ORDERED_PIZZAS", response.data);
     })["catch"](function (error) {
       var notification = {
         type: "error",

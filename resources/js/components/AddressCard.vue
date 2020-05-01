@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     onChange() {
-      this.$store.dispatch("event/updateOrder", this.addressInput);
+      //   this.$store.dispatch("event/updateOrder", this.addressInput);
     }
   }
 };

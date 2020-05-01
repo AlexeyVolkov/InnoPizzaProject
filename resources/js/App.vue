@@ -25,6 +25,11 @@ export default {
     if (this.customer_id && this.customer_id > 0) {
       this.$store.dispatch("orderApi/getCustomer", this.customer_id);
       this.$store.dispatch("orderApi/getOrder", this.customer_id);
+      //   this.$store.dispatch(
+      //     "orderApi/updateOrder",
+      //     this.orderApi.order.id,
+      //     this.customer_id
+      //   );
     } else {
       // it's new Customer
       localStorage.setItem("customer_id", 0);

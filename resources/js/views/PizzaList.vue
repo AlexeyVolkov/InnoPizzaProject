@@ -6,14 +6,14 @@
     <main class="row justify-content-around">
       <PizzaCard v-for="pizza in pizzaApi.pizzas" :key="pizza.id" :pizza="pizza" />
     </main>
-    <aside v-if="orderApi.orderedPizzas.length > 0">
+    <aside v-if="orderApi.orderedPizzasToShow.length > 0">
       <h3>
-        <span class="badge badge-light">{{orderApi.orderedPizzas.length}}</span>pizzas in a bag
+        <span class="badge badge-light">{{orderApi.orderedPizzasToShow.length}}</span>pizzas in a bag
       </h3>
       <ul class="list-group">
         <li
           class="list-group-item"
-          v-for="pizza in orderApi.orderedPizzas"
+          v-for="pizza in orderApi.orderedPizzasToShow"
           :key="pizza.id"
         >{{pizza.name}}</li>
       </ul>

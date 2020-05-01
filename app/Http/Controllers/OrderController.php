@@ -33,16 +33,26 @@ class OrderController extends Controller
 		if ($customer) {
 			// customer exists
 			// open a new Order
-			$order = $customer->orders()->orderBy('id', 'asc')->first();
+			$order = $customer->orders()->orderBy('id', 'desc')->first();
+
 			if ($order) {
 				// Get Ordered Pizzas
 				$ordered_pizzas = $order->orderedPizzas()->get();
+				$ordered_pizzas_arr = [];
 				if (!$ordered_pizzas || count($ordered_pizzas) < 1) {
 					$ordered_pizzas = [];
+				} else {
+					foreach ($ordered_pizzas as $ordered_pizza) {
+						$ordered_pizzas_arr[] = [
+							'ordered_pizza' => $ordered_pizza,
+							'pizza' => $ordered_pizza->pizza()->first()
+						];
+					}
 				}
+
 				return response()->json([
 					'order' => $order,
-					'ordered_pizzas' => $ordered_pizzas,
+					'ordered_pizzas' => $ordered_pizzas_arr,
 				], 200);
 			} else {
 				// open a new Order
@@ -187,16 +197,18 @@ class OrderController extends Controller
 			dd($validator->errors());
 		}
 
-		$order->update(
-			[
-				'payment_id' => $request->input('payment'),
-				'delivery_id' => $request->input('delivery'),
-			]
-		);
+		if ($request->input('payment') && $request->input('delivery')) {
+			$order->update(
+				[
+					'payment_id' => $request->input('payment'),
+					'delivery_id' => $request->input('delivery'),
+				]
+			);
+		}
 
 		$ordered_pizzas = $request->input('ordered_pizzas');
 		if (is_array($ordered_pizzas) && count($ordered_pizzas) > 0) {
-			$order->orderedPizzas()->de();
+			$order->orderedPizzas()->delete();
 			$order->orderedPizzas()->createMany($request->input('ordered_pizzas'));
 		}
 		// Get texts
