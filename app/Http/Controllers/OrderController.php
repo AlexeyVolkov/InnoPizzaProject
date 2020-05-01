@@ -185,11 +185,11 @@ class OrderController extends Controller
 		$rules = [
 			'payment' => 'numeric|min:1',
 			'delivery' => 'numeric|min:1',
-			'ordered_pizzas' => 'array',
-			'ordered_pizzas.*.pizza_id' => 'numeric|min:1',
-			'ordered_pizzas.*.size_id' => 'numeric|min:1',
-			'ordered_pizzas.*.topping_id' => 'numeric|min:1',
-			'ordered_pizzas.*.quantity' => 'numeric|min:1',
+			'pizza' => 'array',
+			'pizza.*.pizza_id' => 'numeric|min:1',
+			'pizza.*.size_id' => 'numeric|min:1',
+			'pizza.*.topping_id' => 'numeric|min:1',
+			'pizza.*.quantity' => 'numeric|min:1',
 		];
 		$validator = Validator::make($request->all(), $rules);
 
@@ -204,20 +204,28 @@ class OrderController extends Controller
 					'delivery_id' => $request->input('delivery'),
 				]
 			);
+			// Get texts
+			$order->payment_label = $order->payment()->first()->name;
+			$order->delivery_label = $order->delivery()->first()->name;
 		}
-
-		$ordered_pizzas = $request->input('ordered_pizzas');
-		if (is_array($ordered_pizzas) && count($ordered_pizzas) > 0) {
-			$order->orderedPizzas()->delete();
-			$order->orderedPizzas()->createMany($request->input('ordered_pizzas'));
+		// append Pizza
+		$pizza = $request->input('pizza');
+		if (is_array($pizza) && count($pizza) > 0) {
+			$new_pizza = new OrderedPizza($request->input('pizza'));
+			$order->orderedPizzas()->save($new_pizza);
 		}
-		// Get texts
-		$order->payment_label = $order->payment()->first()->name;
-		$order->delivery_label = $order->delivery()->first()->name;
-
+		// prettify response
+		$output_pizzas = [];
+		$ordered_pizzas = $order->orderedPizzas()->get();
+		foreach ($ordered_pizzas as $ordered_pizza) {
+			$output_pizzas[] = [
+				'ordered_pizza' => $ordered_pizza,
+				'pizza' => $ordered_pizza->pizza()->first(),
+			];
+		}
 		return response()->json([
 			'order' => $order,
-			'ordered_pizzas' => $order->orderedPizzas()->get(),
+			'ordered_pizzas' => $output_pizzas,
 		], 200);
 	}
 

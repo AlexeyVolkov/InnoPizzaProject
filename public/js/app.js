@@ -1934,11 +1934,7 @@ __webpack_require__.r(__webpack_exports__);
 
     if (this.customer_id && this.customer_id > 0) {
       this.$store.dispatch("orderApi/getCustomer", this.customer_id);
-      this.$store.dispatch("orderApi/getOrder", this.customer_id); //   this.$store.dispatch(
-      //     "orderApi/updateOrder",
-      //     this.orderApi.order.id,
-      //     this.customer_id
-      //   );
+      this.$store.dispatch("orderApi/getOrder", this.customer_id);
     } else {
       // it's new Customer
       localStorage.setItem("customer_id", 0);
@@ -2105,11 +2101,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     onClick: function onClick() {
-      this.$store.dispatch("orderApi/addOrderedPizza", this.pizza);
-      console.log(this.orderApi.orderedPizzas);
-      this.$store.dispatch("orderApi/updateOrder", {
+      this.$store.dispatch("orderApi/addOrderedPizza", {
+        pizza: {
+          pizza_id: this.pizza.id,
+          size_id: 1,
+          topping_id: 1,
+          quantity: 1
+        },
         order_id: this.orderApi.order.id,
-        orderedPizzas: this.orderApi.orderedPizzas
+        customer_id: this.orderApi.order.customer_id
       });
     }
   },
@@ -2153,14 +2153,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  created: function created() {// if (this.orderApi.orderedPizzas.length > 0) {
-    //   this.$store.dispatch(
-    //     "orderApi/updateOrder",
-    //     this.orderApi.order.id,
-    //     this.orderApi.orderedPizzas
-    //   );
-    // }
-  },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(["orderApi", "notification"]))
 });
 
@@ -3019,14 +3011,14 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.orderApi.orderedPizzasToShow.length > 0
+  return _vm.orderApi.orderedPizzas.length > 0
     ? _c("table", { staticClass: "table" }, [
         _vm._m(0),
         _vm._v(" "),
         _c(
           "tbody",
-          _vm._l(_vm.orderApi.orderedPizzasToShow, function(orderedPizza) {
-            return _c("tr", { key: orderedPizza.ordered_pizza.id }, [
+          _vm._l(_vm.orderApi.orderedPizzas, function(orderedPizza) {
+            return _c("tr", { key: orderedPizza.id }, [
               _c("td", [_vm._v(_vm._s(orderedPizza.pizza.name))]),
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(orderedPizza.ordered_pizza.price))])
@@ -19694,6 +19686,13 @@ var apiClient = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
   addCustomer: function addCustomer() {
     return apiClient.post("/api/customer/");
   },
+  // Maybe this move to POST and PUT leave for updates?
+  // finished here
+  addOrderedPizza: function addOrderedPizza(data) {
+    return apiClient.put('/api/orders/' + data.order_id, {
+      pizza: data.pizza
+    });
+  },
   getOrder: function getOrder(customer_id) {
     return apiClient.get("/api/orders/", {
       params: {
@@ -19822,22 +19821,15 @@ var state = {
   order: {},
   orderedPizzasToServer: [],
   orderedPizzasToShow: [],
+  orderedPizzas: [],
   customer: {}
 };
 var mutations = {
-  SET_ORDER: function SET_ORDER(state, data) {
-    state.order = data.order;
+  SET_ORDER: function SET_ORDER(state, order) {
+    state.order = order;
   },
-  ADD_ORDERED_PIZZA: function ADD_ORDERED_PIZZA(state, ordered_pizza) {
-    // add unique values
-    if (-1 === state.orderedPizzasToServer.indexOf(ordered_pizza)) {
-      state.orderedPizzasToServer.push(ordered_pizza);
-    }
-  },
-  SET_ORDERED_PIZZAS: function SET_ORDERED_PIZZAS(state, data) {
-    if (data.ordered_pizzas.length > 0) {
-      state.orderedPizzasToShow = data.ordered_pizzas;
-    }
+  SET_ORDERED_PIZZAS: function SET_ORDERED_PIZZAS(state, orderedPizzas) {
+    state.orderedPizzas = orderedPizzas;
   },
   SET_CUSTOMER: function SET_CUSTOMER(state, data) {
     state.customer = data.customer;
@@ -19845,10 +19837,22 @@ var mutations = {
   }
 };
 var actions = {
-  addOrderedPizza: function addOrderedPizza(_ref, ordered_pizza) {
+  addOrderedPizza: function addOrderedPizza(_ref, data) {
     var commit = _ref.commit,
         dispatch = _ref.dispatch;
-    commit('ADD_ORDERED_PIZZA', ordered_pizza);
+    // append
+    _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].addOrderedPizza(data).then(function (response) {
+      commit("SET_ORDER", response.data.order);
+      commit("SET_ORDERED_PIZZAS", response.data.ordered_pizzas);
+    })["catch"](function (error) {
+      var notification = {
+        type: "error",
+        message: error.message
+      };
+      dispatch("notification/add", notification, {
+        root: true
+      });
+    });
   },
   updateOrder: function updateOrder(_ref2, data) {
     var commit = _ref2.commit,
@@ -19886,8 +19890,8 @@ var actions = {
     var commit = _ref4.commit,
         dispatch = _ref4.dispatch;
     _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].getOrder(customer_id).then(function (response) {
-      commit("SET_ORDER", response.data);
-      commit("SET_ORDERED_PIZZAS", response.data);
+      commit("SET_ORDER", response.data.order);
+      commit("SET_ORDERED_PIZZAS", response.data.ordered_pizzas);
     })["catch"](function (error) {
       var notification = {
         type: "error",

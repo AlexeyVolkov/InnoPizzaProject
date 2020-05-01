@@ -30,6 +30,13 @@ export default {
 	addCustomer() {
 		return apiClient.post("/api/customer/");
 	},
+	// Maybe this move to POST and PUT leave for updates?
+	// finished here
+	addOrderedPizza(data) {
+		return apiClient.put('/api/orders/' + data.order_id, {
+			pizza: data.pizza
+		});
+	},
 	getOrder(customer_id) {
 		return apiClient.get("/api/orders/", {
 			params: {

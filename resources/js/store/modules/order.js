@@ -6,22 +6,15 @@ export const state = {
 	order: {},
 	orderedPizzasToServer: [],
 	orderedPizzasToShow: [],
+	orderedPizzas: [],
 	customer: {},
 };
 export const mutations = {
-	SET_ORDER(state, data) {
-		state.order = data.order;
+	SET_ORDER(state, order) {
+		state.order = order;
 	},
-	ADD_ORDERED_PIZZA(state, ordered_pizza) {
-		// add unique values
-		if (-1 === state.orderedPizzasToServer.indexOf(ordered_pizza)) {
-			state.orderedPizzasToServer.push(ordered_pizza);
-		}
-	},
-	SET_ORDERED_PIZZAS(state, data) {
-		if (data.ordered_pizzas.length > 0) {
-			state.orderedPizzasToShow = data.ordered_pizzas;
-		}
+	SET_ORDERED_PIZZAS(state, orderedPizzas) {
+		state.orderedPizzas = orderedPizzas
 	},
 	SET_CUSTOMER(state, data) {
 		state.customer = data.customer;
@@ -29,8 +22,20 @@ export const mutations = {
 	},
 };
 export const actions = {
-	addOrderedPizza({ commit, dispatch }, ordered_pizza) {
-		commit('ADD_ORDERED_PIZZA', ordered_pizza);
+	addOrderedPizza({ commit, dispatch }, data) {
+		// append
+		EventService.addOrderedPizza(data)
+			.then(response => {
+				commit("SET_ORDER", response.data.order);
+				commit("SET_ORDERED_PIZZAS", response.data.ordered_pizzas);
+			})
+			.catch(error => {
+				const notification = {
+					type: "error",
+					message: error.message
+				};
+				dispatch("notification/add", notification, { root: true });
+			});
 	},
 	updateOrder({ commit, dispatch }, data) {
 		console.log(data.orderedPizzas);
@@ -63,8 +68,8 @@ export const actions = {
 	getOrder({ commit, dispatch }, customer_id) {
 		EventService.getOrder(customer_id)
 			.then(response => {
-				commit("SET_ORDER", response.data);
-				commit("SET_ORDERED_PIZZAS", response.data);
+				commit("SET_ORDER", response.data.order);
+				commit("SET_ORDERED_PIZZAS", response.data.ordered_pizzas);
 			})
 			.catch(error => {
 				const notification = {

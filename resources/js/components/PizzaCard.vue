@@ -27,11 +27,15 @@ export default {
   },
   methods: {
     onClick() {
-      this.$store.dispatch("orderApi/addOrderedPizza", this.pizza);
-      console.log(this.orderApi.orderedPizzas);
-      this.$store.dispatch("orderApi/updateOrder", {
+      this.$store.dispatch("orderApi/addOrderedPizza", {
+        pizza: {
+          pizza_id: this.pizza.id,
+          size_id: 1,
+          topping_id: 1,
+          quantity: 1
+        },
         order_id: this.orderApi.order.id,
-        orderedPizzas: this.orderApi.orderedPizzas
+        customer_id: this.orderApi.order.customer_id
       });
     }
   },
