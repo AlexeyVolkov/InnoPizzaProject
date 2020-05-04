@@ -2151,9 +2151,107 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(["orderApi", "notification"]))
+  methods: {
+    onSubmit: function onSubmit() {
+      this.$store.dispatch("orderApi/updateOrder", {
+        order_id: parseInt(this.orderApi.order.id, 10),
+        comments: this.orderApi.order.comments,
+        delivery_id: parseInt(this.orderApi.order.delivery_id, 10),
+        payment_id: parseInt(this.orderApi.order.payment_id, 10)
+      });
+    }
+  },
+  computed: _objectSpread({
+    orderCompleted: function orderCompleted() {
+      return this.orderApi.order.open > 0 || true == this.orderApi.order.open;
+    }
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(["orderApi", "notification"]))
 });
 
 /***/ }),
@@ -2861,7 +2959,7 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _vm.orderApi.orderedPizzasToShow.length > 0
+            _vm.orderApi.orderedPizzas.length > 0
               ? _c(
                   "li",
                   { staticClass: "nav-item" },
@@ -3011,23 +3109,287 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.orderApi.orderedPizzas.length > 0
-    ? _c("table", { staticClass: "table" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "tbody",
-          _vm._l(_vm.orderApi.orderedPizzas, function(orderedPizza) {
-            return _c("tr", { key: orderedPizza.id }, [
-              _c("td", [_vm._v(_vm._s(orderedPizza.pizza.name))]),
+  return _c("div", [
+    _vm.orderApi.orderedPizzas.length > 0
+      ? _c("table", { staticClass: "table" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(_vm.orderApi.orderedPizzas, function(orderedPizza) {
+              return _c("tr", { key: orderedPizza.id }, [
+                _c("td", [_vm._v(_vm._s(orderedPizza.pizza.name))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(orderedPizza.ordered_pizza.price))])
+              ])
+            }),
+            0
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.orderApi.orderedPizzas.length > 0
+      ? _c(
+          "form",
+          {
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.onSubmit($event)
+              }
+            }
+          },
+          [
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "orderComments" } }, [
+                _vm._v("Address and notes")
+              ]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(orderedPizza.ordered_pizza.price))])
-            ])
-          }),
-          0
+              _c("textarea", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.orderApi.order.comments,
+                    expression: "orderApi.order.comments"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: {
+                  id: "orderComments",
+                  name: "comments",
+                  placeholder: "Lenina 45, 32"
+                },
+                domProps: { value: _vm.orderApi.order.comments },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(
+                      _vm.orderApi.order,
+                      "comments",
+                      $event.target.value
+                    )
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "small",
+                {
+                  staticClass: "form-text text-muted",
+                  attrs: { id: "commentsHelp" }
+                },
+                [_vm._v("We do read notes you leave")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", [_vm._v("Payment")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-check" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.orderApi.order.payment_id,
+                      expression: "orderApi.order.payment_id"
+                    }
+                  ],
+                  staticClass: "form-check-input",
+                  attrs: {
+                    type: "radio",
+                    name: "paymentRadio",
+                    id: "cash",
+                    value: "1",
+                    checked: ""
+                  },
+                  domProps: {
+                    checked: _vm._q(_vm.orderApi.order.payment_id, "1")
+                  },
+                  on: {
+                    change: function($event) {
+                      return _vm.$set(_vm.orderApi.order, "payment_id", "1")
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c(
+                  "label",
+                  { staticClass: "form-check-label", attrs: { for: "cash" } },
+                  [_vm._v("Cash")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-check" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.orderApi.order.payment_id,
+                      expression: "orderApi.order.payment_id"
+                    }
+                  ],
+                  staticClass: "form-check-input",
+                  attrs: {
+                    type: "radio",
+                    name: "paymentRadio",
+                    id: "bank_card",
+                    value: "2"
+                  },
+                  domProps: {
+                    checked: _vm._q(_vm.orderApi.order.payment_id, "2")
+                  },
+                  on: {
+                    change: function($event) {
+                      return _vm.$set(_vm.orderApi.order, "payment_id", "2")
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c(
+                  "label",
+                  {
+                    staticClass: "form-check-label",
+                    attrs: { for: "bank_card" }
+                  },
+                  [_vm._v("Bank Card")]
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", [_vm._v("Delivery")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-check" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.orderApi.order.delivery_id,
+                      expression: "orderApi.order.delivery_id"
+                    }
+                  ],
+                  staticClass: "form-check-input",
+                  attrs: {
+                    type: "radio",
+                    name: "deliveryRadio",
+                    id: "shipping",
+                    value: "1",
+                    checked: ""
+                  },
+                  domProps: {
+                    checked: _vm._q(_vm.orderApi.order.delivery_id, "1")
+                  },
+                  on: {
+                    change: function($event) {
+                      return _vm.$set(_vm.orderApi.order, "delivery_id", "1")
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c(
+                  "label",
+                  {
+                    staticClass: "form-check-label",
+                    attrs: { for: "shipping" }
+                  },
+                  [_vm._v("Shipping")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-check" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.orderApi.order.delivery_id,
+                      expression: "orderApi.order.delivery_id"
+                    }
+                  ],
+                  staticClass: "form-check-input",
+                  attrs: {
+                    type: "radio",
+                    name: "deliveryRadio",
+                    id: "take_away",
+                    value: "2"
+                  },
+                  domProps: {
+                    checked: _vm._q(_vm.orderApi.order.delivery_id, "2")
+                  },
+                  on: {
+                    change: function($event) {
+                      return _vm.$set(_vm.orderApi.order, "delivery_id", "2")
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c(
+                  "label",
+                  {
+                    staticClass: "form-check-label",
+                    attrs: { for: "take_away" }
+                  },
+                  [_vm._v("Take away")]
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c(
+              "button",
+              { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+              [_vm._v("Get an order id")]
+            )
+          ]
         )
-      ])
-    : _vm._e()
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.orderCompleted
+      ? _c("div", [
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "orderID" } }, [
+              _vm._v("Order Tracking Number")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.orderApi.order.id,
+                  expression: "orderApi.order.id"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { id: "orderID", name: "orderID", readonly: "" },
+              domProps: { value: _vm.orderApi.order.id },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.orderApi.order, "id", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c(
+              "small",
+              {
+                staticClass: "form-text text-muted",
+                attrs: { id: "orderIDHelp" }
+              },
+              [_vm._v("Call +3534 and say these digits to track manually")]
+            )
+          ])
+        ])
+      : _vm._e()
+  ])
 }
 var staticRenderFns = [
   function() {
@@ -19701,11 +20063,10 @@ var apiClient = axios__WEBPACK_IMPORTED_MODULE_0___default.a.create({
     });
   },
   updateOrder: function updateOrder(data) {
-    console.log(data.orderedPizzas);
     return apiClient.put("/api/orders/" + data.order_id, {
-      params: {
-        ordered_pizzas: data.orderedPizzas
-      }
+      comments: data.comments,
+      delivery_id: data.delivery_id,
+      payment_id: data.payment_id
     });
   },
   addOrder: function addOrder(customer, ordered_pizzas) {
@@ -19857,10 +20218,9 @@ var actions = {
   updateOrder: function updateOrder(_ref2, data) {
     var commit = _ref2.commit,
         dispatch = _ref2.dispatch;
-    console.log(data.orderedPizzas);
     _services_EventService_js__WEBPACK_IMPORTED_MODULE_0__["default"].updateOrder(data).then(function (response) {
-      commit("SET_ORDER", response.data);
-      commit("SET_ORDERED_PIZZAS", response.data);
+      commit("SET_ORDER", response.data.order);
+      commit("SET_ORDERED_PIZZAS", response.data.ordered_pizzas);
     })["catch"](function (error) {
       var notification = {
         type: "error",

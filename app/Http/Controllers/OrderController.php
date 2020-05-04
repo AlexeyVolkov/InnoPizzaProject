@@ -42,6 +42,16 @@ class OrderController extends Controller
 				if (!$ordered_pizzas || count($ordered_pizzas) < 1) {
 					$ordered_pizzas = [];
 				} else {
+					// add total price
+					foreach ($ordered_pizzas as $ordered_pizza) {
+						$price = $ordered_pizza->pizza()->first()->price
+							* $ordered_pizza->size()->first()->weight
+							* $ordered_pizza->topping()->first()->weight
+							* $ordered_pizza->quantity;
+						$ordered_pizza->price = round($price, 2);
+						$ordered_pizza->save();
+					}
+					// make a ([ordered_pizza, pizza]) collection
 					foreach ($ordered_pizzas as $ordered_pizza) {
 						$ordered_pizzas_arr[] = [
 							'ordered_pizza' => $ordered_pizza,
@@ -183,13 +193,14 @@ class OrderController extends Controller
 		//     'delivery' => 2
 		// ];
 		$rules = [
-			'payment' => 'numeric|min:1',
-			'delivery' => 'numeric|min:1',
+			'payment_id' => 'numeric|min:1',
+			'delivery_id' => 'numeric|min:1',
 			'pizza' => 'array',
 			'pizza.*.pizza_id' => 'numeric|min:1',
 			'pizza.*.size_id' => 'numeric|min:1',
 			'pizza.*.topping_id' => 'numeric|min:1',
 			'pizza.*.quantity' => 'numeric|min:1',
+			'comments' => 'string'
 		];
 		$validator = Validator::make($request->all(), $rules);
 
@@ -197,35 +208,72 @@ class OrderController extends Controller
 			dd($validator->errors());
 		}
 
-		if ($request->input('payment') && $request->input('delivery')) {
+		// defaults
+		$output_pizzas = $order->orderedPizzas()->get();
+		$labels = [];
+
+		if ($request->input('comments')) {
 			$order->update(
 				[
-					'payment_id' => $request->input('payment'),
-					'delivery_id' => $request->input('delivery'),
+					'comments' => $request->input('comments'),
+				]
+			);
+		}
+		if ($request->input('payment_id') && $request->input('delivery_id')) {
+			$order->update(
+				[
+					'payment_id' => $request->input('payment_id'),
+					'delivery_id' => $request->input('delivery_id'),
 				]
 			);
 			// Get texts
-			$order->payment_label = $order->payment()->first()->name;
-			$order->delivery_label = $order->delivery()->first()->name;
-		}
-		// append Pizza
-		$pizza = $request->input('pizza');
-		if (is_array($pizza) && count($pizza) > 0) {
-			$new_pizza = new OrderedPizza($request->input('pizza'));
-			$order->orderedPizzas()->save($new_pizza);
-		}
-		// prettify response
-		$output_pizzas = [];
-		$ordered_pizzas = $order->orderedPizzas()->get();
-		foreach ($ordered_pizzas as $ordered_pizza) {
-			$output_pizzas[] = [
-				'ordered_pizza' => $ordered_pizza,
-				'pizza' => $ordered_pizza->pizza()->first(),
+			$labels = [
+				'payment_label' => $order->payment()->first()->name,
+				'delivery_label' => $order->delivery()->first()->name
 			];
 		}
+		if ($request->input('pizza')) {
+			// append Pizza
+			$pizza = $request->input('pizza');
+			if (is_array($pizza) && count($pizza) > 0) {
+				$new_pizza = new OrderedPizza($request->input('pizza'));
+				$order->orderedPizzas()->save($new_pizza);
+			}
+			// prettify response
+			$output_pizzas = [];
+			$ordered_pizzas = $order->orderedPizzas()->get();
+
+			// add total price
+			foreach ($ordered_pizzas as $ordered_pizza) {
+				$price = $ordered_pizza->pizza()->first()->price
+					* $ordered_pizza->size()->first()->weight
+					* $ordered_pizza->topping()->first()->weight
+					* $ordered_pizza->quantity;
+				$ordered_pizza->price = round($price, 2);
+				$ordered_pizza->save();
+			}
+			// make a ([ordered_pizza, pizza]) collection
+			foreach ($ordered_pizzas as $ordered_pizza) {
+				$output_pizzas[] = [
+					'ordered_pizza' => $ordered_pizza,
+					'pizza' => $ordered_pizza->pizza()->first(),
+				];
+			}
+		}
+
+		// complete (open) order or not
+		if (count($output_pizzas) > 1 && $order->payment_id > 1 && $order->delivery_id) {
+			$order->update(
+				[
+					'open' => true,
+				]
+			);
+		}
+
 		return response()->json([
 			'order' => $order,
-			'ordered_pizzas' => $output_pizzas,
+			'ordered_pizzas' =>  $output_pizzas,
+			'labels' => $labels
 		], 200);
 	}
 

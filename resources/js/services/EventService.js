@@ -45,11 +45,10 @@ export default {
 		});
 	},
 	updateOrder(data) {
-		console.log(data.orderedPizzas);
 		return apiClient.put("/api/orders/" + data.order_id, {
-			params: {
-				ordered_pizzas: data.orderedPizzas,
-			}
+			comments: data.comments,
+			delivery_id: data.delivery_id,
+			payment_id: data.payment_id,
 		});
 	},
 	addOrder(customer, ordered_pizzas) {

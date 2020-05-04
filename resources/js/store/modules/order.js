@@ -38,11 +38,10 @@ export const actions = {
 			});
 	},
 	updateOrder({ commit, dispatch }, data) {
-		console.log(data.orderedPizzas);
 		EventService.updateOrder(data)
 			.then(response => {
-				commit("SET_ORDER", response.data);
-				commit("SET_ORDERED_PIZZAS", response.data);
+				commit("SET_ORDER", response.data.order);
+				commit("SET_ORDERED_PIZZAS", response.data.ordered_pizzas);
 			})
 			.catch(error => {
 				const notification = {

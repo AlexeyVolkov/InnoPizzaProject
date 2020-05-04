@@ -25,7 +25,7 @@
             <span v-if="'/' === $route.path" class="sr-only">(current)</span>
           </router-link>
         </li>
-        <li class="nav-item" v-if="orderApi.orderedPizzasToShow.length > 0">
+        <li class="nav-item" v-if="orderApi.orderedPizzas.length > 0">
           <router-link
             class="nav-link"
             :class="'/bag' === $route.path ? 'active':''"
