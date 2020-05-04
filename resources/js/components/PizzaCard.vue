@@ -14,7 +14,7 @@
           id="figure-1"
         >${{ pizza.price }}</figcaption>
       </figure>
-      <button href="#" class="btn btn-primary" v-on:click="onClick">+ Добавить</button>
+      <button href="#" class="btn btn-primary" v-on:click="onClick">+ Add</button>
     </div>
   </div>
 </template>
@@ -35,7 +35,7 @@ export default {
           quantity: 1
         },
         order_id: this.orderApi.order.id,
-        customer_id: this.orderApi.order.customer_id
+        customer_id: this.orderApi.customer.id
       });
     }
   },

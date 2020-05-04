@@ -2109,7 +2109,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           quantity: 1
         },
         order_id: this.orderApi.order.id,
-        customer_id: this.orderApi.order.customer_id
+        customer_id: this.orderApi.customer.id
       });
     }
   },
@@ -3081,7 +3081,7 @@ var render = function() {
             attrs: { href: "#" },
             on: { click: _vm.onClick }
           },
-          [_vm._v("+ Добавить")]
+          [_vm._v("+ Add")]
         )
       ])
     ]

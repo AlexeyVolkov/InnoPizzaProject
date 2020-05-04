@@ -66,7 +66,9 @@ class OrderController extends Controller
 				], 200);
 			} else {
 				// open a new Order
-				$order = $customer->orders()->create();
+				$order = new Order();
+				$order->comments = '';
+				$order = $customer->orders()->save($order);
 				return response()->json([
 					'order' => $order,
 					'ordered_pizzas' => [],
@@ -209,7 +211,7 @@ class OrderController extends Controller
 		}
 
 		// defaults
-		$output_pizzas = $order->orderedPizzas()->get();
+		$output_pizzas = [];
 		$labels = [];
 
 		if ($request->input('comments')) {
@@ -239,30 +241,33 @@ class OrderController extends Controller
 				$new_pizza = new OrderedPizza($request->input('pizza'));
 				$order->orderedPizzas()->save($new_pizza);
 			}
-			// prettify response
-			$output_pizzas = [];
-			$ordered_pizzas = $order->orderedPizzas()->get();
-
-			// add total price
-			foreach ($ordered_pizzas as $ordered_pizza) {
-				$price = $ordered_pizza->pizza()->first()->price
-					* $ordered_pizza->size()->first()->weight
-					* $ordered_pizza->topping()->first()->weight
-					* $ordered_pizza->quantity;
-				$ordered_pizza->price = round($price, 2);
-				$ordered_pizza->save();
-			}
-			// make a ([ordered_pizza, pizza]) collection
-			foreach ($ordered_pizzas as $ordered_pizza) {
-				$output_pizzas[] = [
-					'ordered_pizza' => $ordered_pizza,
-					'pizza' => $ordered_pizza->pizza()->first(),
-				];
-			}
 		}
 
+
+		// prettify response
+		$output_pizzas = [];
+		$ordered_pizzas = $order->orderedPizzas()->get();
+
+		// add total price
+		foreach ($ordered_pizzas as $ordered_pizza) {
+			$price = $ordered_pizza->pizza()->first()->price
+				* $ordered_pizza->size()->first()->weight
+				* $ordered_pizza->topping()->first()->weight
+				* $ordered_pizza->quantity;
+			$ordered_pizza->price = round($price, 2);
+			$ordered_pizza->save();
+		}
+		// make a ([ordered_pizza, pizza]) collection
+		foreach ($ordered_pizzas as $ordered_pizza) {
+			$output_pizzas[] = [
+				'ordered_pizza' => $ordered_pizza,
+				'pizza' => $ordered_pizza->pizza()->first(),
+			];
+		}
+
+
 		// complete (open) order or not
-		if (count($output_pizzas) > 1 && $order->payment_id > 1 && $order->delivery_id) {
+		if (count($output_pizzas) > 1 && $order->payment_id > 0 && $order->delivery_id > 0) {
 			$order->update(
 				[
 					'open' => true,
