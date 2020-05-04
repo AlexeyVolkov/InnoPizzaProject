@@ -1910,6 +1910,12 @@ module.exports = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_NavBar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/NavBar */ "./resources/js/components/NavBar.vue");
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -1928,19 +1934,34 @@ __webpack_require__.r(__webpack_exports__);
       customer_id: parseInt(localStorage.getItem("customer_id"), 10)
     };
   },
+  // finished here
+  // check stability
   created: function created() {
+    var _this = this;
+
     // Pizzas
     this.$store.dispatch("pizzaApi/fetchManyPizzas"); // Customer
 
     if (this.customer_id && this.customer_id > 0) {
       this.$store.dispatch("orderApi/getCustomer", this.customer_id);
-      this.$store.dispatch("orderApi/getOrder", this.customer_id);
+      this.$store.dispatch("orderApi/getOrder", this.customer_id).then(function () {
+        if (!_this.orderApi.customer || !_this.orderApi.customer.id) {
+          localStorage.setItem("customer_id", 0);
+
+          _this.$store.dispatch("orderApi/addCustomer").then(function () {
+            _this.$router.push({
+              name: "PizzaList"
+            });
+          });
+        }
+      });
     } else {
       // it's new Customer
       localStorage.setItem("customer_id", 0);
       this.$store.dispatch("orderApi/addCustomer");
     }
-  }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(["orderApi", "notification"]))
 });
 
 /***/ }),
